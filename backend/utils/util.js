@@ -84,10 +84,9 @@ However, your internal thoughts MUST NOT be printed outside the JSON. Summarize 
     const responseSchema = {
         type: "OBJECT",
         properties: {
-            text: { type: "STRING" },
-            explanation: { type: "STRING" }
+            text: { type: "STRING" }
         },
-        required: ["text", "explanation"]
+        required: ["text"]
     };
     const client = new GoogleGenAI({
         vertexai: true,
@@ -103,7 +102,7 @@ However, your internal thoughts MUST NOT be printed outside the JSON. Summarize 
             systemInstruction: sysPrompt,
             temperature: 1,
             thinkingConfig: {
-                thinkingLevel: ThinkingLevel.HIGH
+                thinkingLevel: ThinkingLevel.LOW
             },
             responseMimeType: 'application/json',
             responseSchema: responseSchema,
