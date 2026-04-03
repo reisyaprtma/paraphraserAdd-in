@@ -11,6 +11,7 @@
   <SupportUrl DefaultValue="https://www.contoso.com/help"/>
   <AppDomains>
     <AppDomain>https://www.contoso.com</AppDomain>
+    <AppDomain>https://backend-server-paraphraser.vercel.app/</AppDomain>
     <!-- <AppDomain>https://paraphraser-add-in.vercel.app</AppDomain> -->
   </AppDomains>
   <Hosts>

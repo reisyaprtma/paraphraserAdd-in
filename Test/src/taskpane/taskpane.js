@@ -10,7 +10,7 @@
 */
 
 // ----------------------------------------- GLOBAL VARIABEL --------------------------
-const BACKEND_URL = "http://localhost:8000/api/paraphrase";
+const BACKEND_URL = "https://backend-server-paraphraser.vercel.app/api/paraphrase";
 // let resultPara = ""
 import { htmlToText } from 'html-to-text';
 let finalOoxml = ""
