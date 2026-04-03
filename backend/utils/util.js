@@ -1,8 +1,25 @@
+import fs from 'fs';
+import path from 'path';
 import { SYS_PROMPT, PARAPLUIE_PROMPT, MODE_PROMPTS } from "./prompt.js";
 import { GoogleGenAI, ThinkingLevel } from '@google/genai';
 import { bleu } from 'bleu-score';
 import prisma from './prisma.js';
 
+// --- THE VERCEL FIX ---
+// If we are in Vercel (production) and have the JSON string in an environment variable
+if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+    // 1. Define a temporary file path
+    const tempKeyPath = path.join('/tmp', 'google-credentials.json');
+    
+    // 2. Write the JSON string to this temporary physical file
+    fs.writeFileSync(tempKeyPath, process.env.GOOGLE_APPLICATION_CREDENTIALS);
+    
+    // 3. Point the standard Google environment variable to this new temp file
+    process.env.GOOGLE_APPLICATION_CREDENTIALS = tempKeyPath;
+}
+// ----------------------
+
+// const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 

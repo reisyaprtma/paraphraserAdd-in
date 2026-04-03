@@ -1,5 +1,6 @@
 node_modules/  # Library pihak ketiga (sangat besar)
 /backend/node_modules/
+/backend/parapluieta-6e88b6a47973.json
 /test/node_modules/
 npm-debug.log  # Log error npm
 /backend/.env           # File berisi API Key/Password (Sangat Rahasia!)
