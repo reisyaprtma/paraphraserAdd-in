@@ -102,7 +102,7 @@ However, your internal thoughts MUST NOT be printed outside the JSON. Summarize 
             systemInstruction: sysPrompt,
             temperature: 1,
             thinkingConfig: {
-                thinkingLevel: ThinkingLevel.LOW
+                thinkingLevel: ThinkingLevel.HIGH
             },
             responseMimeType: 'application/json',
             responseSchema: responseSchema,
