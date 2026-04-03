@@ -47,7 +47,6 @@ app.post('/api/paraphrase', async (req, res) => {
     try {
         const { originalText, tokenizedText, objects } = req.body;
         let iterasi = 0;
-        let logId = null;
 
         // Objek untuk menampung hasil jika 3x percobaan tetap tidak memenuhi threshold
         let failedResults = {
@@ -71,7 +70,7 @@ app.post('/api/paraphrase', async (req, res) => {
         const logEntry = await prisma.paraphraseLog.create({
             data: { isSuccessful: false }  // update setelah loop selesai
         });
-        logId = logEntry.id;
+        const logId = logEntry.id;
         console.log('📝 ParaphraseLog created, id:', logId);
 
         let successResult = null;
@@ -136,22 +135,12 @@ app.post('/api/paraphrase', async (req, res) => {
     } catch (e) {
         console.error('Error:', e);
         try {
-            if (logId) {
-                await prisma.paraphraseLog.update({
-                    where: { id: logId },
-                    data: {
-                        isSuccessful: false,
-                        errorLog: e.message || String(e),
-                    }
-                });
-            } else {
-                await prisma.paraphraseLog.create({
-                    data: {
-                        isSuccessful: false,
-                        errorLog: e.message || String(e),
-                    }
-                });
-            }
+            await prisma.paraphraseLog.create({
+                data: {
+                    isSuccessful: false,
+                    errorLog: e.message || String(e),
+                }
+            });
         } catch (dbErr) {
             console.error('DB logging error (catch):', dbErr);
         }
