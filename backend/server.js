@@ -7,7 +7,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 
 
 const app = express();
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 8000;
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
@@ -22,10 +22,10 @@ const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 
 
 app.use(cors({
-    origin: true,
+    origin: "https://paraphraser-add-in.vercel.app",
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin']
+    // allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin']
 }))
 
 app.use((req, res, next) => {
@@ -201,3 +201,5 @@ app.listen(port, '0.0.0.0', () => {
     console.log(`Backend server running on port ${port}`);
     console.log(`Intelligem API endpoint: http://localhost:${port}/api/intelligem`);
 });
+
+module.exports = app;
