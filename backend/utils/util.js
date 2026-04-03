@@ -93,7 +93,7 @@ However, your internal thoughts MUST NOT be printed outside the JSON. Summarize 
         vertexai: true,
         project: GOOGLE_CLOUD_PROJECT,
         location: GOOGLE_CLOUD_LOCATION,
-        googleApplicationCredentials: JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS),
+        // googleApplicationCredentials: JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS),
     });
 
     const paraphraseStart = Date.now();
