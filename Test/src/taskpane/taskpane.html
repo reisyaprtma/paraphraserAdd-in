@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FrasaTwist Add-in</title>
+    <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/diff-match-patch/1.0.5/index.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        heavy: '#1F2022',
+                        brand: {
+                            mint: '#B6FF8F',
+                            lavender: '#C4C0FF'
+                        },
+                        status: {
+                            success: '#B6FF8F',
+                            danger: '#FF6B6B',
+                            warning: '#FFD93D',
+                            info: '#73C2FB'
+                        }
+                    },
+                    boxShadow: {
+                        'float': '0 12px 30px rgba(0,0,0,0.08)',
+                        'float-dark': '0 16px 40px rgba(0,0,0,0.6)'
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsdiff/5.1.0/diff.min.js"></script>
+    <link rel="stylesheet" href="taskpane.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body class="transition-colors duration-300 overflow-x-hidden">
+
+    <!-- ── Header ──────────────────────────────────────── -->
+    <header>
+        <div class="header-inner">
+            <!-- Brand -->
+            <div class="flex items-center gap-2.5">
+                <!-- <div class="brand-logo float-1">fT</div> -->
+                <h1 class="brand-name">Paraphraser</h1>
+            </div>
+
+            <!-- Settings -->
+            <div class="relative">
+                <div class="flex">
+                    <button id="settings-btn" title="Pengaturan" class="settings-btn">
+                        <i data-lucide="settings" class="w-4 h-4"></i>
+                    </button>
+                    <a href="https://forms.gle/NEf3ts4Byxuwc7K89">
+                        <button id="form-btn" title="Formulir Feedback" class="settings-btn">
+                            <i data-lucide="form" class="w-4 h-4"></i>
+                        </button>
+                    </a>
+                </div>
+
+                <div id="settings-menu" class="settings-dropdown hidden">
+                    <p class="settings-label">Pengaturan</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-medium" style="color:var(--clr-text)">Mode Gelap</span>
+                        <button id="dark-mode-toggle" class="toggle-track">
+                            <div id="toggle-circle" class="toggle-thumb"></div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ── Main ────────────────────────────────────────── -->
+    <main>
+
+        <!-- Input Section -->
+        <section id="input-section" class="animate-fade-in-up">
+            <p class="section-label">Teks Terseleksi <span style="font-weight:400;opacity:0.65">(maks 2500
+                    karakter)</span></p>
+            <textarea id="source-text" class="source-textarea" readonly
+                placeholder="Seleksi teks di dokumen Word untuk memulai…"></textarea>
+            <div class="mt-1.5">
+                <span id="selection-status" class="status-badge">
+                    <i data-lucide="mouse-pointer-2" class="w-3 h-3"></i>
+                    Menunggu seleksi…
+                </span>
+            </div>
+        </section>
+
+        <!-- Action Buttons -->
+        <section class="flex flex-col gap-3 animate-fade-in-up delay-100">
+            <button id="paraphrase-btn" class="btn-primary">
+                <i data-lucide="sparkles" class="w-4 h-4"></i>
+                Parafrase Sekarang
+            </button>
+            <!-- <button id="test-btn" class="btn-danger">
+                <i data-lucide="flask-conical" class="w-3.5 h-3.5"></i>
+                Simulasi Hasil Gagal
+            </button> -->
+        </section>
+
+        <!-- Loading State -->
+        <section id="loading-state" class="hidden">
+            <div class="spinner-wrap animate-fade-in">
+                <div class="spinner">
+                    <div class="spinner-ring"></div>
+                    <div class="spinner-arc"></div>
+                    <div class="spinner-pulse"></div>
+                </div>
+                <p class="spinner-label">Sedang memproses parafrase…</p>
+            </div>
+        </section>
+
+        <!-- Error Box -->
+        <div id="error-box" class="alert-box error hidden">
+            <i data-lucide="alert-triangle" class="alert-icon w-4 h-4"></i>
+            <div>
+                <p class="alert-title">Terjadi Kesalahan Parafrase</p>
+                <p id="error-message" class="mt-0.5" style="font-size:11px"></p>
+            </div>
+        </div>
+
+        <!-- Warning Box -->
+        <div id="warning-box" class="alert-box warning hidden">
+            <i data-lucide="alert-triangle" class="alert-icon w-4 h-4"></i>
+            <div>
+                <p class="alert-title">Peringatan Validasi</p>
+                <p class="mt-0.5" style="font-size:11px">Skor kemiripan makna / keragaman leksikal rendah. Harap periksa
+                    kembali hasil parafrase berikut.</p>
+            </div>
+        </div>
+
+        <!-- Result Section -->
+        <section id="result-section" class="hidden animate-slide-up">
+
+            <!-- Diff Card -->
+            <div class="card">
+                <!-- Card Header -->
+                <div class="card-header">
+                    <span class="section-label" style="margin-bottom:0">Tampilkan Teks Dibuang</span>
+                    <button id="diff-toggle" class="diff-toggle-btn">
+                        <div id="toggle-circle-2" class="diff-toggle-thumb"></div>
+                    </button>
+                </div>
+
+                <!-- Diff Content -->
+                <div class="card-body">
+                    <div id="result-content"></div>
+                </div>
+
+                <!-- Card Footer: counts + action buttons -->
+                <div class="card-footer">
+                    <div class="diff-count">
+                        <span class="removed">− <span id="removal-count"></span></span>
+                        <span class="added">+ <span id="addition-count"></span></span>
+                    </div>
+                    <div class="flex gap-2">
+                        <button id="copy-btn" class="btn-icon" title="Salin Teks">
+                            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                        </button>
+                        <button id="insert-btn" class="btn-icon filled" title="Sisipkan ke Dokumen">
+                            <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feedback Card -->
+            <div class="card" style="padding:14px;display:flex;flex-direction:column;gap:10px">
+                <p class="section-label" style="margin-bottom:0">Penilaian Hasil</p>
+
+                <div class="flex items-center justify-center gap-1" id="star-rating">
+                    <button type="button" class="star-btn" data-value="1">
+                        <i data-lucide="star" class="w-6 h-6 text-gray-300 transition-colors pointer-events-none"></i>
+                    </button>
+                    <button type="button" class="star-btn" data-value="2">
+                        <i data-lucide="star" class="w-6 h-6 text-gray-300 transition-colors pointer-events-none"></i>
+                    </button>
+                    <button type="button" class="star-btn" data-value="3">
+                        <i data-lucide="star" class="w-6 h-6 text-gray-300 transition-colors pointer-events-none"></i>
+                    </button>
+                    <button type="button" class="star-btn" data-value="4">
+                        <i data-lucide="star" class="w-6 h-6 text-gray-300 transition-colors pointer-events-none"></i>
+                    </button>
+                    <button type="button" class="star-btn" data-value="5">
+                        <i data-lucide="star" class="w-6 h-6 text-gray-300 transition-colors pointer-events-none"></i>
+                    </button>
+                </div>
+
+                <textarea id="feedback-comment" rows="2" class="feedback-textarea"
+                    placeholder="Ada saran atau kendala? (Opsional)"></textarea>
+
+                <button id="submit-feedback-btn" class="btn-submit-feedback">
+                    Kirim Penilaian
+                </button>
+            </div>
+
+        </section>
+
+        <!-- Failed Results Container -->
+        <div id="failed-results-container"></div>
+
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast"></div>
+
+    <script src="taskpane.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

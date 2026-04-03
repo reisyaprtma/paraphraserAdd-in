@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  // url      = env("DATABASE_URL")
+  // directUrl = env("DIRECT_URL")
+}
+
+model Paraphrase {
+  id               String   @id @default(uuid())
+  paraphraseLog_id String
+  paraphraseLog    ParaphraseLog @relation(fields: [paraphraseLog_id], references: [id])
+  sourceText       String   @db.Text
+  tokenizedInput   String?  @db.Text // Teks dengan placeholder [[CIT_n]]
+  paraphrasedText  String   @db.Text
+  iteration        Int      @default(1)
+
+  // Metrik Evaluasi
+  bleuScore        Float?
+  paraPluieScore   Float?
+
+  // Statistik Token & Performa (Parafrase)
+  paraphrase_promptTokens     Int?     // Jumlah token input
+  paraphrase_completionTokens Int?     // Jumlah token hasil generate
+  paraphrase_totalTokens      Int?
+  paraphrase_latency          Float?   // Waktu proses dalam milidetik
+
+  // Statistik Token & Performa (ParaPluie)
+  parapluie_promptTokens     Int?     // Jumlah token input
+  parapluie_completionTokens Int?     // Jumlah token hasil generate
+  parapluie_totalTokens      Int?
+  parapluie_latency          Float?   // Waktu proses dalam milidetik
+}
+
+model ParaphraseLog {
+  id               String   @id @default(uuid())
+  paraphrases      Paraphrase[]
+
+  // Feedback & Metadata
+  rating           Int?
+  userComment      String?  @db.Text
+  errorLog         String?  @db.Text
+  iterations       Int      @default(1)
+  isSuccessful     Boolean  @default(true)
+  
+  createdAt        DateTime @default(now())
+
+  @@index([rating])
+}

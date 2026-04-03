@@ -1,0 +1,50 @@
+{
+  "project_context": {
+    "name": "FrasaTwist",
+    "environment": "Microsoft Office Word Add-in (Task Pane)",
+    "tech_stack": ["HTML", "Tailwind CSS", "JavaScript"],
+    "design_concept": "Flat Antigravity / Clean High-Contrast",
+    "strict_rule": "Do NOT modify the existing application workflow, API logic, or core paraphrasing functions. Apply changes ONLY to UI presentation and CSS animation classes."
+  },
+  "style_guide": {
+    "colors": {
+      "background": "#FFFFFF",
+      "text_main": "#000000",
+      "heavy_elements": "#1F2022",
+      "brand": {
+        "mint_green": "#B6FF8F",
+        "lavender": "#C4C0FF"
+      },
+      "functional": {
+        "success": "#B6FF8F",
+        "danger": "#FF6B6B",
+        "warning": "#FFD93D",
+        "info": "#73C2FB"
+      }
+    },
+    "typography": {
+      "headings": "Sans-serif, bold, uppercase, tight tracking (e.g., '3D VIRTUOSO' style from reference)",
+      "body": "Sans-serif, regular weight, high legibility for academic reading",
+      "buttons": "Sans-serif, medium/bold, clean and readable"
+    },
+    "visual_rules": {
+      "shapes": "Pill-shaped (fully rounded) buttons and tags. Large corner radius for main cards.",
+      "borders": "Clean, thin borders (1px solid #E5E7EB) on light elements to separate them from the background.",
+      "shadows": "Clean, distinct drop shadows (no heavy blur) to create separation between the Z-layers. Example: `shadow-[0_12px_30px_rgba(0,0,0,0.08)`",
+      "textures": "None. 100% solid colors. No glassmorphism, no backdrop-blur, no transparency on surfaces."
+    }
+  },
+  "animation_guidelines": {
+    "antigravity_effect": {
+      "behavior": "Continuous, subtle vertical floating (translateY up and down by 4px-8px) using CSS @keyframes.",
+      "timing": "Slow, ease-in-out curve (4-6 seconds per cycle) so it feels like weightless drifting, not bouncing.",
+      "staggering": "Apply different `animation-delay` values to separate UI elements (like tags or cards) so they float independently out of sync.",
+      "interaction": "On hover, the element stops floating, translates slightly upward, and increases its shadow depth to simulate being picked up."
+    }
+  },
+  "component_mapping": {
+    "primary_buttons": "Solid black or heavy dark grey background, white text, pill shape.",
+    "tags_and_chips": "White background, thin border, floating animation, black text.",
+    "content_cards": "Solid lavender or white background, rounded corners, soft distinct shadow to indicate elevation."
+  }
+}

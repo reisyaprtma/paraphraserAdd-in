@@ -1,0 +1,7 @@
+node_modules/  # Library pihak ketiga (sangat besar)
+/backend/node_modules/
+/test/node_modules/
+npm-debug.log  # Log error npm
+/backend/.env           # File berisi API Key/Password (Sangat Rahasia!)
+.gitignore     # File ini
+
