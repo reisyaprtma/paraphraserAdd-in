@@ -58,25 +58,6 @@
               </Group>
             </OfficeTab>
           </ExtensionPoint>
-          <ExtensionPoint xsi:type="ContextMenu">
-            <OfficeMenu id="ContextMenuText">
-              <Control xsi:type="Button" id="MyCustomContextButton">
-                <Label resid="ContextButtonLabel" />
-                <Supertip>
-                  <Title resid="ContextButtonLabel" />
-                  <Description resid="ContextButtonTooltip" />
-                </Supertip>
-                <Icon>
-                  <bt:Image size="16" resid="icon16" />
-                  <bt:Image size="32" resid="icon32" />
-                  <bt:Image size="80" resid="icon80" />
-                </Icon>
-                <Action xsi:type="ExecuteFunction">
-                  <FunctionName>myRightClickAction</FunctionName>
-                </Action>
-              </Control>
-            </OfficeMenu>
-          </ExtensionPoint>
         </DesktopFormFactor>
       </Host>
     </Hosts>
