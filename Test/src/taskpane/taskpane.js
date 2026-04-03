@@ -15,6 +15,7 @@ const BACKEND_URL = "https://backend-server-paraphraser.vercel.app/api/paraphras
 import { htmlToText } from 'html-to-text';
 let finalOoxml = ""
 let finalParaphrased
+let paraphrasedRaw
 let tokenizedTexts
 let objects
 let seleksi_teks
@@ -274,6 +275,7 @@ async function callAPI(originalText, tokenizedText, objects) {
         const data = await response.json()
         const paraphrasedText = data.paraphrasedText
         finalParaphrased = paraphrasedText
+        paraphrasedRaw = data.paraphrased
         const paraphrased = data.paraphrased
         const pScore = data.pScore
         const bScore = data.bScore
@@ -943,7 +945,7 @@ function setupEventListeners() {
     // 4. Retry Action [cite: 468]
     document.getElementById("copy-btn").onclick = async () => {
         try {
-            await navigator.clipboard.writeText(finalParaphrased);
+            await navigator.clipboard.writeText(paraphrasedRaw);
             showNotification("Teks berhasil disalin!");
         } catch (err) {
             console.error("Gagal menyalin teks: ", err);
