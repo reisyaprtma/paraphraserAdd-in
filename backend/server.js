@@ -201,5 +201,3 @@ app.listen(port, '0.0.0.0', () => {
     console.log(`Backend server running on port ${port}`);
     console.log(`Intelligem API endpoint: http://localhost:${port}/api/intelligem`);
 });
-
-module.exports = app;
