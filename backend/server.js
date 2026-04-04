@@ -43,6 +43,28 @@ app.use((req, res, next) => {
 app.use(express.json({ limit: '50mb' }))
 app.use(express.urlencoded({ extended: true }))
 
+// Endpoint dummy untuk simulasi hasil gagal (testing frontend)
+app.get('/api/paraphrase/failed-test', (req, res) => {
+    const failedResults = {
+        paraphrasedText: [
+            "Pemanfaatan AI pada penyusunan karya akademis mampu menaikkan efisiensi waktu pengerjaan skripsi untuk mahasiswa tahun terakhir.",
+            "Aplikasi kecerdasan buatan di penulisan karya ilmiah sangat menolong percepatan penyelesaian tugas akhir bagi mahasiswa semester akhir.",
+            "Implementasi teknologi AI dalam menulis karya ilmiah bisa mendukung efisiensi waktu penyelesaian tugas akhir untuk mahasiswa tingkat akhir."
+        ],
+        paraphrased: [
+            "Pemanfaatan AI pada penyusunan karya akademis mampu menaikkan efisiensi waktu pengerjaan skripsi untuk mahasiswa tahun terakhir.",
+            "Aplikasi kecerdasan buatan di penulisan karya ilmiah sangat menolong percepatan penyelesaian tugas akhir bagi mahasiswa semester akhir.",
+            "Implementasi teknologi AI dalam menulis karya ilmiah bisa mendukung efisiensi waktu penyelesaian tugas akhir untuk mahasiswa tingkat akhir."
+        ],
+        pScore: [-11, 0.78, 0.92],
+        bScore: [0.1, 0.55, 0.75],
+        logId: "dummy-test-log-id"
+    };
+
+    console.log('🧪 Mengirim dummy failedResult ke frontend');
+    res.json(failedResults);
+});
+
 app.post('/api/paraphrase', async (req, res) => {
     try {
         const { originalText, tokenizedText, objects } = req.body;
