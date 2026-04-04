@@ -896,6 +896,53 @@ function test() {
     if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 
+// Fungsi untuk fetch data dummy failedResult dari backend endpoint /api/paraphrase/failed-test
+async function fetchFailedTest() {
+    const FAILED_TEST_URL = BACKEND_URL.replace('/api/paraphrase', '/api/paraphrase/failed-test');
+    const loadingState = document.getElementById("loading-state");
+    const failedResultSection = document.getElementById("failed-results-container");
+    const btn = document.getElementById("test-btn");
+
+    // Mock teks asli dan objects untuk rendering diff
+    seleksi_teks = "Penggunaan teknologi kecerdasan buatan dalam penulisan karya ilmiah dapat membantu meningkatkan efisiensi waktu pengerjaan tugas akhir bagi mahasiswa tingkat akhir.";
+    objects = { math: [], citations: [] };
+
+    // UI: Show loading
+    btn.disabled = true;
+    btn.classList.add("opacity-50");
+    loadingState.classList.remove("hidden");
+    failedResultSection.classList.add("hidden");
+
+    try {
+        console.log("🧪 Fetching dummy failed result dari backend...");
+        const response = await fetch(FAILED_TEST_URL, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log("🧪 Data dummy diterima:", data);
+
+        currentLogId = data.logId || null;
+
+        // Tampilkan hasil gagal menggunakan fungsi yang sudah ada
+        showFailedResult(data.paraphrasedText, data.paraphrased, data.pScore, data.bScore);
+
+        // Re-render Lucide icons
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+    } catch (error) {
+        console.error("🧪 Gagal fetch failed-test:", error);
+        showError(`Gagal mengambil data test: ${error.message}`);
+    } finally {
+        btn.disabled = false;
+        btn.classList.remove("opacity-50");
+    }
+}
+
 function check() {
     const removal = document.getElementById("removed-container")
     removal.classList.remove('hidden')
@@ -927,10 +974,8 @@ function setupEventListeners() {
     };
 
     // 2. Paraphrase Action [cite: 457]
-    // document.getElementById("test-btn").onclick = extractCombinedTokens;
     document.getElementById("paraphrase-btn").onclick = sendPrompt;
-    // document.getElementById("test-btn").onclick = test;
-    //   document.getElementById("check-btn").onclick = check;
+    document.getElementById("test-btn").onclick = fetchFailedTest;
     // 3. Insert Action [cite: 470]
     document.getElementById("insert-btn").onclick = () => {
         // Logika insertText nanti disini
