@@ -303,9 +303,18 @@ async function sendPrompt() {
     const diffToggle = document.getElementById("diff-toggle");
     const toggleCircle2 = document.getElementById("toggle-circle-2");
     const failedresultSection = document.getElementById("failed-results-container");
-    diffToggle.classList.remove("active");
-    toggleCircle2.classList.remove("translate-x-5")
-    failedresultSection.classList.add("hidden")
+    const resultSection = document.getElementById("result-section");
+    const warningBox = document.getElementById("warning-box");
+    const errorBox = document.getElementById("error-box");
+
+    // UI Reset: Sembunyikan semua container hasil sebelumnya
+    if (failedresultSection) failedresultSection.classList.add("hidden");
+    if (resultSection) resultSection.classList.add("hidden");
+    if (warningBox) warningBox.classList.add('hidden');
+    if (errorBox) errorBox.classList.add('hidden');
+
+    if (diffToggle) diffToggle.classList.remove("active");
+    if (toggleCircle2) toggleCircle2.classList.remove("translate-x-5");
 
     const starBtns = document.querySelectorAll('.star-btn');
     const submitBtn = document.getElementById('submit-feedback-btn');
@@ -331,11 +340,6 @@ async function sendPrompt() {
     // submitBtn.classList.add('bg-gray-100', 'hover:bg-gray-200');
     submitBtn.classList.remove('bg-green-100', 'text-green-700', 'dark:bg-green-900', 'dark:text-green-300');
 
-    const warningBox = document.getElementById("warning-box")
-    warningBox.classList.add('hidden')
-    const errorBox = document.getElementById("error-box")
-    errorBox.classList.add('hidden')
-
     const extractedToken = await extractCombinedTokens()
     tokenizedTexts = extractedToken.text
     objects = extractedToken.object
@@ -343,16 +347,14 @@ async function sendPrompt() {
     console.log(objects)
     const tokenizedText = tokenizedTexts
     try {
-        // const inputSection = document.getElementById("input-section");
         const loadingState = document.getElementById("loading-state");
-        const resultSection = document.getElementById("result-section");
         const btn = document.getElementById("paraphrase-btn");
         // const selectedMode = document.getElementById("paraphrase-mode")
         // UI Transition: Start Loading
         btn.disabled = true;
         btn.classList.add("opacity-50");
         loadingState.classList.remove("hidden");
-        resultSection.classList.add("hidden");
+        // resultSection.classList.add("hidden"); // Sudah disembunyikan di awal
         console.log(seleksi_teks)
         await callAPI(seleksi_teks, tokenizedText, objects)
 
@@ -902,16 +904,23 @@ async function fetchFailedTest() {
     const loadingState = document.getElementById("loading-state");
     const failedResultSection = document.getElementById("failed-results-container");
     const btn = document.getElementById("test-btn");
+    const resultSection = document.getElementById("result-section");
+    const warningBox = document.getElementById("warning-box");
+    const errorBox = document.getElementById("error-box");
 
     // Mock teks asli dan objects untuk rendering diff
     seleksi_teks = "Penggunaan teknologi kecerdasan buatan dalam penulisan karya ilmiah dapat membantu meningkatkan efisiensi waktu pengerjaan tugas akhir bagi mahasiswa tingkat akhir.";
     objects = { math: [], citations: [] };
 
-    // UI: Show loading
+    // UI: Sembunyikan SEMUA container hasil sebelum mulai loading
     btn.disabled = true;
     btn.classList.add("opacity-50");
     loadingState.classList.remove("hidden");
-    failedResultSection.classList.add("hidden");
+    
+    if (failedResultSection) failedResultSection.classList.add("hidden");
+    if (resultSection) resultSection.classList.add("hidden");
+    if (warningBox) warningBox.classList.add("hidden");
+    if (errorBox) errorBox.classList.add("hidden");
 
     try {
         console.log("🧪 Fetching dummy failed result dari backend...");
