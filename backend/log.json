@@ -1,0 +1,515 @@
+[
+  {
+    "textPayload": "Starting new instance. Reason: DEPLOYMENT_ROLLOUT - Instance started due to traffic shifting between revisions due to deployment, traffic split adjustment, or deployment health check.",
+    "insertId": "69d0c20c00002cc22cc2ed8c",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "service_name": "paraphraseradd-in",
+        "revision_name": "paraphraseradd-in-00003-5p7",
+        "location": "asia-southeast3",
+        "project_id": "parapluieta",
+        "configuration_name": "paraphraseradd-in"
+      }
+    },
+    "timestamp": "2026-04-04T07:47:24.011458Z",
+    "severity": "INFO",
+    "labels": {
+      "commit-sha": "705836ddc5e1b2a90b2e76627744dbf56fc44e4d",
+      "managed-by": "gcp-cloud-build-deploy-cloud-run",
+      "gcb-trigger-id": "68286e46-95e1-4599-a959-90dd40067aa2",
+      "gcb-build-id": "df6e5024-ee90-41ea-ac48-8f4a227b6b23",
+      "gcb-trigger-region": "global",
+      "scaling_reason": "DEPLOYMENT_ROLLOUT",
+      "instanceId": "008c15ff087a5c6b5ef3976f58a4e849d84b1081389cd820bfeadf921b82a931fdc59952317723bc04adfc7eb5979ce288b857c05d699f255011db116537958d8f35913eb441f9f402d870c35a9f288d6daee6895c7292"
+    },
+    "logName": "projects/parapluieta/logs/run.googleapis.com%2Fvarlog%2Fsystem",
+    "receiveTimestamp": "2026-04-04T07:47:24.013984115Z"
+  },
+  {
+    "textPayload": "node:internal/modules/esm/resolve:873",
+    "insertId": "69d0c20c00089054712b84d6",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "location": "asia-southeast3",
+        "project_id": "parapluieta",
+        "revision_name": "paraphraseradd-in-00003-5p7",
+        "configuration_name": "paraphraseradd-in",
+        "service_name": "paraphraseradd-in"
+      }
+    },
+    "timestamp": "2026-04-04T07:47:24.561236Z",
+    "labels": {
+      "gcb-trigger-id": "68286e46-95e1-4599-a959-90dd40067aa2",
+      "gcb-build-id": "df6e5024-ee90-41ea-ac48-8f4a227b6b23",
+      "commit-sha": "705836ddc5e1b2a90b2e76627744dbf56fc44e4d",
+      "managed-by": "gcp-cloud-build-deploy-cloud-run",
+      "gcb-trigger-region": "global",
+      "instanceId": "008c15ff087a5c6b5ef3976f58a4e849d84b1081389cd820bfeadf921b82a931fdc59952317723bc04adfc7eb5979ce288b857c05d699f255011db116537958d8f35913eb441f9f402d870c35a9f288d6daee6895c7292"
+    },
+    "logName": "projects/parapluieta/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2026-04-04T07:47:24.563933028Z"
+  },
+  {
+    "textPayload": "  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);",
+    "insertId": "69d0c20c0008906fae7fb038",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "service_name": "paraphraseradd-in",
+        "configuration_name": "paraphraseradd-in",
+        "revision_name": "paraphraseradd-in-00003-5p7",
+        "project_id": "parapluieta",
+        "location": "asia-southeast3"
+      }
+    },
+    "timestamp": "2026-04-04T07:47:24.561263Z",
+    "labels": {
+      "managed-by": "gcp-cloud-build-deploy-cloud-run",
+      "commit-sha": "705836ddc5e1b2a90b2e76627744dbf56fc44e4d",
+      "gcb-build-id": "df6e5024-ee90-41ea-ac48-8f4a227b6b23",
+      "gcb-trigger-id": "68286e46-95e1-4599-a959-90dd40067aa2",
+      "instanceId": "008c15ff087a5c6b5ef3976f58a4e849d84b1081389cd820bfeadf921b82a931fdc59952317723bc04adfc7eb5979ce288b857c05d699f255011db116537958d8f35913eb441f9f402d870c35a9f288d6daee6895c7292",
+      "gcb-trigger-region": "global"
+    },
+    "logName": "projects/parapluieta/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2026-04-04T07:47:24.563933028Z"
+  },
+  {
+    "textPayload": "        ^",
+    "insertId": "69d0c20c0008907387ac974e",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "service_name": "paraphraseradd-in",
+        "location": "asia-southeast3",
+        "project_id": "parapluieta",
+        "revision_name": "paraphraseradd-in-00003-5p7",
+        "configuration_name": "paraphraseradd-in"
+      }
+    },
+    "timestamp": "2026-04-04T07:47:24.561267Z",
+    "labels": {
+      "gcb-trigger-id": "68286e46-95e1-4599-a959-90dd40067aa2",
+      "gcb-build-id": "df6e5024-ee90-41ea-ac48-8f4a227b6b23",
+      "managed-by": "gcp-cloud-build-deploy-cloud-run",
+      "commit-sha": "705836ddc5e1b2a90b2e76627744dbf56fc44e4d",
+      "instanceId": "008c15ff087a5c6b5ef3976f58a4e849d84b1081389cd820bfeadf921b82a931fdc59952317723bc04adfc7eb5979ce288b857c05d699f255011db116537958d8f35913eb441f9f402d870c35a9f288d6daee6895c7292",
+      "gcb-trigger-region": "global"
+    },
+    "logName": "projects/parapluieta/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2026-04-04T07:47:24.563933028Z"
+  },
+  {
+    "textPayload": "Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@google/generative-ai' imported from /usr/src/app/server.js\n    at packageResolve (node:internal/modules/esm/resolve:873:9)\n    at moduleResolve (node:internal/modules/esm/resolve:946:18)\n    at defaultResolve (node:internal/modules/esm/resolve:1188:11)\n    at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:708:12)",
+    "insertId": "69d0c20c000890c0656feb11",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "service_name": "paraphraseradd-in",
+        "configuration_name": "paraphraseradd-in",
+        "revision_name": "paraphraseradd-in-00003-5p7",
+        "location": "asia-southeast3",
+        "project_id": "parapluieta"
+      }
+    },
+    "timestamp": "2026-04-04T07:47:24.561344Z",
+    "severity": "ERROR",
+    "labels": {
+      "instanceId": "008c15ff087a5c6b5ef3976f58a4e849d84b1081389cd820bfeadf921b82a931fdc59952317723bc04adfc7eb5979ce288b857c05d699f255011db116537958d8f35913eb441f9f402d870c35a9f288d6daee6895c7292",
+      "gcb-trigger-region": "global",
+      "managed-by": "gcp-cloud-build-deploy-cloud-run",
+      "commit-sha": "705836ddc5e1b2a90b2e76627744dbf56fc44e4d",
+      "gcb-trigger-id": "68286e46-95e1-4599-a959-90dd40067aa2",
+      "gcb-build-id": "df6e5024-ee90-41ea-ac48-8f4a227b6b23"
+    },
+    "logName": "projects/parapluieta/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2026-04-04T07:47:24.896328712Z",
+    "errorGroups": [
+      {
+        "id": "CNa9tvCwiMPCYw"
+      }
+    ]
+  },
+  {
+    "textPayload": "    at #cachedDefaultResolve (node:internal/modules/esm/loader:657:25)",
+    "insertId": "69d0c20c000890c672a4217d",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "service_name": "paraphraseradd-in",
+        "revision_name": "paraphraseradd-in-00003-5p7",
+        "location": "asia-southeast3",
+        "project_id": "parapluieta",
+        "configuration_name": "paraphraseradd-in"
+      }
+    },
+    "timestamp": "2026-04-04T07:47:24.561350Z",
+    "labels": {
+      "instanceId": "008c15ff087a5c6b5ef3976f58a4e849d84b1081389cd820bfeadf921b82a931fdc59952317723bc04adfc7eb5979ce288b857c05d699f255011db116537958d8f35913eb441f9f402d870c35a9f288d6daee6895c7292",
+      "gcb-trigger-region": "global",
+      "managed-by": "gcp-cloud-build-deploy-cloud-run",
+      "commit-sha": "705836ddc5e1b2a90b2e76627744dbf56fc44e4d",
+      "gcb-trigger-id": "68286e46-95e1-4599-a959-90dd40067aa2",
+      "gcb-build-id": "df6e5024-ee90-41ea-ac48-8f4a227b6b23"
+    },
+    "logName": "projects/parapluieta/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2026-04-04T07:47:24.896328712Z"
+  },
+  {
+    "textPayload": "    at ModuleLoader.resolve (node:internal/modules/esm/loader:640:38)",
+    "insertId": "69d0c20c000890cbc50516be",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "revision_name": "paraphraseradd-in-00003-5p7",
+        "project_id": "parapluieta",
+        "location": "asia-southeast3",
+        "configuration_name": "paraphraseradd-in",
+        "service_name": "paraphraseradd-in"
+      }
+    },
+    "timestamp": "2026-04-04T07:47:24.561355Z",
+    "labels": {
+      "commit-sha": "705836ddc5e1b2a90b2e76627744dbf56fc44e4d",
+      "managed-by": "gcp-cloud-build-deploy-cloud-run",
+      "gcb-trigger-id": "68286e46-95e1-4599-a959-90dd40067aa2",
+      "gcb-build-id": "df6e5024-ee90-41ea-ac48-8f4a227b6b23",
+      "gcb-trigger-region": "global",
+      "instanceId": "008c15ff087a5c6b5ef3976f58a4e849d84b1081389cd820bfeadf921b82a931fdc59952317723bc04adfc7eb5979ce288b857c05d699f255011db116537958d8f35913eb441f9f402d870c35a9f288d6daee6895c7292"
+    },
+    "logName": "projects/parapluieta/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2026-04-04T07:47:24.896328712Z"
+  },
+  {
+    "textPayload": "    at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:264:38)",
+    "insertId": "69d0c20c000890ce8cb78673",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "configuration_name": "paraphraseradd-in",
+        "location": "asia-southeast3",
+        "project_id": "parapluieta",
+        "revision_name": "paraphraseradd-in-00003-5p7",
+        "service_name": "paraphraseradd-in"
+      }
+    },
+    "timestamp": "2026-04-04T07:47:24.561358Z",
+    "labels": {
+      "managed-by": "gcp-cloud-build-deploy-cloud-run",
+      "commit-sha": "705836ddc5e1b2a90b2e76627744dbf56fc44e4d",
+      "gcb-trigger-id": "68286e46-95e1-4599-a959-90dd40067aa2",
+      "gcb-build-id": "df6e5024-ee90-41ea-ac48-8f4a227b6b23",
+      "instanceId": "008c15ff087a5c6b5ef3976f58a4e849d84b1081389cd820bfeadf921b82a931fdc59952317723bc04adfc7eb5979ce288b857c05d699f255011db116537958d8f35913eb441f9f402d870c35a9f288d6daee6895c7292",
+      "gcb-trigger-region": "global"
+    },
+    "logName": "projects/parapluieta/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2026-04-04T07:47:24.896328712Z"
+  },
+  {
+    "textPayload": "    at ModuleJob._link (node:internal/modules/esm/module_job:168:49) {",
+    "insertId": "69d0c20c000890d23cfde55a",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "configuration_name": "paraphraseradd-in",
+        "location": "asia-southeast3",
+        "project_id": "parapluieta",
+        "revision_name": "paraphraseradd-in-00003-5p7",
+        "service_name": "paraphraseradd-in"
+      }
+    },
+    "timestamp": "2026-04-04T07:47:24.561362Z",
+    "labels": {
+      "gcb-trigger-region": "global",
+      "instanceId": "008c15ff087a5c6b5ef3976f58a4e849d84b1081389cd820bfeadf921b82a931fdc59952317723bc04adfc7eb5979ce288b857c05d699f255011db116537958d8f35913eb441f9f402d870c35a9f288d6daee6895c7292",
+      "commit-sha": "705836ddc5e1b2a90b2e76627744dbf56fc44e4d",
+      "managed-by": "gcp-cloud-build-deploy-cloud-run",
+      "gcb-build-id": "df6e5024-ee90-41ea-ac48-8f4a227b6b23",
+      "gcb-trigger-id": "68286e46-95e1-4599-a959-90dd40067aa2"
+    },
+    "logName": "projects/parapluieta/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2026-04-04T07:47:24.896328712Z"
+  },
+  {
+    "textPayload": "  code: 'ERR_MODULE_NOT_FOUND'",
+    "insertId": "69d0c20c000890d694a25a0d",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "service_name": "paraphraseradd-in",
+        "project_id": "parapluieta",
+        "location": "asia-southeast3",
+        "revision_name": "paraphraseradd-in-00003-5p7",
+        "configuration_name": "paraphraseradd-in"
+      }
+    },
+    "timestamp": "2026-04-04T07:47:24.561366Z",
+    "labels": {
+      "gcb-trigger-region": "global",
+      "instanceId": "008c15ff087a5c6b5ef3976f58a4e849d84b1081389cd820bfeadf921b82a931fdc59952317723bc04adfc7eb5979ce288b857c05d699f255011db116537958d8f35913eb441f9f402d870c35a9f288d6daee6895c7292",
+      "commit-sha": "705836ddc5e1b2a90b2e76627744dbf56fc44e4d",
+      "managed-by": "gcp-cloud-build-deploy-cloud-run",
+      "gcb-trigger-id": "68286e46-95e1-4599-a959-90dd40067aa2",
+      "gcb-build-id": "df6e5024-ee90-41ea-ac48-8f4a227b6b23"
+    },
+    "logName": "projects/parapluieta/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2026-04-04T07:47:24.896328712Z"
+  },
+  {
+    "textPayload": "}",
+    "insertId": "69d0c20c000890d90e827122",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "revision_name": "paraphraseradd-in-00003-5p7",
+        "location": "asia-southeast3",
+        "project_id": "parapluieta",
+        "configuration_name": "paraphraseradd-in",
+        "service_name": "paraphraseradd-in"
+      }
+    },
+    "timestamp": "2026-04-04T07:47:24.561369Z",
+    "labels": {
+      "gcb-trigger-region": "global",
+      "instanceId": "008c15ff087a5c6b5ef3976f58a4e849d84b1081389cd820bfeadf921b82a931fdc59952317723bc04adfc7eb5979ce288b857c05d699f255011db116537958d8f35913eb441f9f402d870c35a9f288d6daee6895c7292",
+      "gcb-build-id": "df6e5024-ee90-41ea-ac48-8f4a227b6b23",
+      "gcb-trigger-id": "68286e46-95e1-4599-a959-90dd40067aa2",
+      "commit-sha": "705836ddc5e1b2a90b2e76627744dbf56fc44e4d",
+      "managed-by": "gcp-cloud-build-deploy-cloud-run"
+    },
+    "logName": "projects/parapluieta/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2026-04-04T07:47:24.896328712Z"
+  },
+  {
+    "textPayload": "Node.js v20.20.2",
+    "insertId": "69d0c20c000890e0438ab7e1",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "service_name": "paraphraseradd-in",
+        "revision_name": "paraphraseradd-in-00003-5p7",
+        "location": "asia-southeast3",
+        "project_id": "parapluieta",
+        "configuration_name": "paraphraseradd-in"
+      }
+    },
+    "timestamp": "2026-04-04T07:47:24.561376Z",
+    "labels": {
+      "gcb-trigger-region": "global",
+      "instanceId": "008c15ff087a5c6b5ef3976f58a4e849d84b1081389cd820bfeadf921b82a931fdc59952317723bc04adfc7eb5979ce288b857c05d699f255011db116537958d8f35913eb441f9f402d870c35a9f288d6daee6895c7292",
+      "gcb-trigger-id": "68286e46-95e1-4599-a959-90dd40067aa2",
+      "gcb-build-id": "df6e5024-ee90-41ea-ac48-8f4a227b6b23",
+      "commit-sha": "705836ddc5e1b2a90b2e76627744dbf56fc44e4d",
+      "managed-by": "gcp-cloud-build-deploy-cloud-run"
+    },
+    "logName": "projects/parapluieta/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2026-04-04T07:47:24.896328712Z"
+  },
+  {
+    "textPayload": "Container called exit(1).",
+    "insertId": "69d0c20d0003a34ef6df1ad4",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "project_id": "parapluieta",
+        "location": "asia-southeast3",
+        "revision_name": "paraphraseradd-in-00003-5p7",
+        "configuration_name": "paraphraseradd-in",
+        "service_name": "paraphraseradd-in"
+      }
+    },
+    "timestamp": "2026-04-04T07:47:25.236485564Z",
+    "severity": "WARNING",
+    "labels": {
+      "commit-sha": "705836ddc5e1b2a90b2e76627744dbf56fc44e4d",
+      "managed-by": "gcp-cloud-build-deploy-cloud-run",
+      "gcb-build-id": "df6e5024-ee90-41ea-ac48-8f4a227b6b23",
+      "gcb-trigger-id": "68286e46-95e1-4599-a959-90dd40067aa2",
+      "gcb-trigger-region": "global",
+      "instanceId": "008c15ff087a5c6b5ef3976f58a4e849d84b1081389cd820bfeadf921b82a931fdc59952317723bc04adfc7eb5979ce288b857c05d699f255011db116537958d8f35913eb441f9f402d870c35a9f288d6daee6895c7292",
+      "container_name": "placeholder-1"
+    },
+    "logName": "projects/parapluieta/logs/run.googleapis.com%2Fvarlog%2Fsystem",
+    "receiveTimestamp": "2026-04-04T07:47:25.345994119Z"
+  },
+  {
+    "textPayload": "Default STARTUP TCP probe failed 1 time consecutively for container \"placeholder-1\" on port 8080. The instance was not started.\nConnection failed with status CANCELLED.",
+    "insertId": "69d0c20d0005091284841695",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "revision_name": "paraphraseradd-in-00003-5p7",
+        "location": "asia-southeast3",
+        "project_id": "parapluieta",
+        "configuration_name": "paraphraseradd-in",
+        "service_name": "paraphraseradd-in"
+      }
+    },
+    "timestamp": "2026-04-04T07:47:25.330002Z",
+    "severity": "ERROR",
+    "labels": {
+      "instanceId": "008c15ff087a5c6b5ef3976f58a4e849d84b1081389cd820bfeadf921b82a931fdc59952317723bc04adfc7eb5979ce288b857c05d699f255011db116537958d8f35913eb441f9f402d870c35a9f288d6daee6895c7292",
+      "gcb-trigger-region": "global",
+      "managed-by": "gcp-cloud-build-deploy-cloud-run",
+      "commit-sha": "705836ddc5e1b2a90b2e76627744dbf56fc44e4d",
+      "gcb-trigger-id": "68286e46-95e1-4599-a959-90dd40067aa2",
+      "gcb-build-id": "df6e5024-ee90-41ea-ac48-8f4a227b6b23"
+    },
+    "logName": "projects/parapluieta/logs/run.googleapis.com%2Fvarlog%2Fsystem",
+    "receiveTimestamp": "2026-04-04T07:47:25.345994119Z"
+  },
+  {
+    "protoPayload": {
+      "@type": "type.googleapis.com/google.cloud.audit.AuditLog",
+      "status": {
+        "code": 9,
+        "message": "Ready condition status changed to False for Revision paraphraseradd-in-00003-5p7 with message: The user-provided container failed to start and listen on the port defined provided by the PORT=8080 environment variable within the allocated timeout. This can happen when the container port is misconfigured or if the timeout is too short. The health check timeout can be extended. Logs for this revision might contain more information.\n\nLogs URL: https://console.cloud.google.com/logs/viewer?project=parapluieta&resource=cloud_run_revision/service_name/paraphraseradd-in/revision_name/paraphraseradd-in-00003-5p7&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22paraphraseradd-in%22%0Aresource.labels.revision_name%3D%22paraphraseradd-in-00003-5p7%22 \nFor more troubleshooting guidance, see https://cloud.google.com/run/docs/troubleshooting#container-failed-to-start"
+      },
+      "serviceName": "run.googleapis.com",
+      "methodName": "/Services.ReplaceService",
+      "resourceName": "namespaces/parapluieta/revisions/paraphraseradd-in-00003-5p7",
+      "response": {
+        "metadata": {
+          "name": "paraphraseradd-in-00003-5p7",
+          "namespace": "779882211224",
+          "selfLink": "/apis/serving.knative.dev/v1/namespaces/779882211224/revisions/paraphraseradd-in-00003-5p7",
+          "uid": "c08ed3a7-6760-4ba5-8bf0-b6841291d4d5",
+          "resourceVersion": "AAZOnaT/6IQ",
+          "generation": 1,
+          "creationTimestamp": "2026-04-04T07:47:15.286082Z",
+          "labels": {
+            "client.knative.dev/nonce": "niegpucoml",
+            "commit-sha": "705836ddc5e1b2a90b2e76627744dbf56fc44e4d",
+            "gcb-build-id": "df6e5024-ee90-41ea-ac48-8f4a227b6b23",
+            "gcb-trigger-id": "68286e46-95e1-4599-a959-90dd40067aa2",
+            "gcb-trigger-region": "global",
+            "managed-by": "gcp-cloud-build-deploy-cloud-run",
+            "serving.knative.dev/configuration": "paraphraseradd-in",
+            "serving.knative.dev/configurationGeneration": "3",
+            "serving.knative.dev/service": "paraphraseradd-in",
+            "serving.knative.dev/serviceUid": "fe4d0ea4-0a62-442a-af49-7a3d6eacda0d",
+            "serving.knative.dev/route": "paraphraseradd-in",
+            "cloud.googleapis.com/location": "asia-southeast3",
+            "run.googleapis.com/startupProbeType": "Default"
+          },
+          "annotations": {
+            "run.googleapis.com/client-name": "gcloud",
+            "run.googleapis.com/client-version": "563.0.0",
+            "autoscaling.knative.dev/maxScale": "20",
+            "serving.knative.dev/creator": "779882211224-compute@developer.gserviceaccount.com",
+            "run.googleapis.com/operation-id": "2a2d4a72-c91a-45b2-b3b1-44b694ff67d3",
+            "run.googleapis.com/startup-cpu-boost": "true"
+          },
+          "ownerReferences": [
+            {
+              "kind": "Configuration",
+              "name": "paraphraseradd-in",
+              "uid": "66300651-561b-44f7-ba66-d4d6807339de",
+              "apiVersion": "serving.knative.dev/v1",
+              "controller": true,
+              "blockOwnerDeletion": true
+            }
+          ]
+        },
+        "apiVersion": "serving.knative.dev/v1",
+        "kind": "Revision",
+        "spec": {
+          "containerConcurrency": 80,
+          "timeoutSeconds": 300,
+          "serviceAccountName": "779882211224-compute@developer.gserviceaccount.com",
+          "containers": [
+            {
+              "name": "placeholder-1",
+              "image": "asia-southeast3-docker.pkg.dev/parapluieta/cloud-run-source-deploy/paraphraseradd-in/paraphraseradd-in@sha256:f50ed31cc6be5b6a5d4e4b47be4841a3a335f375365a03b4c896fc504681eb24",
+              "ports": [
+                {
+                  "name": "http1",
+                  "containerPort": 8080
+                }
+              ],
+              "resources": {
+                "limits": {
+                  "cpu": "1000m",
+                  "memory": "512Mi"
+                }
+              },
+              "startupProbe": {
+                "timeoutSeconds": 240,
+                "periodSeconds": 240,
+                "failureThreshold": 1,
+                "tcpSocket": {
+                  "port": 8080
+                }
+              }
+            }
+          ]
+        },
+        "status": {
+          "observedGeneration": 1,
+          "conditions": [
+            {
+              "type": "Ready",
+              "status": "False",
+              "reason": "HealthCheckContainerError",
+              "message": "The user-provided container failed to start and listen on the port defined provided by the PORT=8080 environment variable within the allocated timeout. This can happen when the container port is misconfigured or if the timeout is too short. The health check timeout can be extended. Logs for this revision might contain more information.\n\nLogs URL: https://console.cloud.google.com/logs/viewer?project=parapluieta&resource=cloud_run_revision/service_name/paraphraseradd-in/revision_name/paraphraseradd-in-00003-5p7&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22paraphraseradd-in%22%0Aresource.labels.revision_name%3D%22paraphraseradd-in-00003-5p7%22 \nFor more troubleshooting guidance, see https://cloud.google.com/run/docs/troubleshooting#container-failed-to-start",
+              "lastTransitionTime": "2026-04-04T07:47:25.330564Z"
+            },
+            {
+              "type": "ContainerHealthy",
+              "status": "False",
+              "reason": "HealthCheckContainerError",
+              "message": "The user-provided container failed to start and listen on the port defined provided by the PORT=8080 environment variable within the allocated timeout. This can happen when the container port is misconfigured or if the timeout is too short. The health check timeout can be extended. Logs for this revision might contain more information.\n\nLogs URL: https://console.cloud.google.com/logs/viewer?project=parapluieta&resource=cloud_run_revision/service_name/paraphraseradd-in/revision_name/paraphraseradd-in-00003-5p7&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22paraphraseradd-in%22%0Aresource.labels.revision_name%3D%22paraphraseradd-in-00003-5p7%22 \nFor more troubleshooting guidance, see https://cloud.google.com/run/docs/troubleshooting#container-failed-to-start",
+              "lastTransitionTime": "2026-04-04T07:47:25.330564Z"
+            },
+            {
+              "type": "ContainerReady",
+              "status": "True",
+              "message": "Container image import completed in 5.78s.",
+              "lastTransitionTime": "2026-04-04T07:47:21.420496Z"
+            },
+            {
+              "type": "ResourcesAvailable",
+              "status": "True",
+              "message": "Provisioning imported containers completed in 2.5s. Checking container health. This will wait for up to 4m for the configured startup probe, including an initial delay of 0s.",
+              "lastTransitionTime": "2026-04-04T07:47:23.927674Z"
+            },
+            {
+              "type": "Retry",
+              "status": "True",
+              "reason": "ImmediateRetry",
+              "message": "System will retry after 00:00 from lastTransitionTime for attempt 0.",
+              "lastTransitionTime": "2026-04-04T07:47:23.927674Z",
+              "severity": "Info"
+            }
+          ],
+          "logUrl": "https://console.cloud.google.com/logs/viewer?project=parapluieta&resource=cloud_run_revision/service_name/paraphraseradd-in/revision_name/paraphraseradd-in-00003-5p7&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22paraphraseradd-in%22%0Aresource.labels.revision_name%3D%22paraphraseradd-in-00003-5p7%22",
+          "imageDigest": "asia-southeast3-docker.pkg.dev/parapluieta/cloud-run-source-deploy/paraphraseradd-in/paraphraseradd-in@sha256:f50ed31cc6be5b6a5d4e4b47be4841a3a335f375365a03b4c896fc504681eb24",
+          "containerStatuses": [
+            {
+              "name": "placeholder-1",
+              "imageDigest": "asia-southeast3-docker.pkg.dev/parapluieta/cloud-run-source-deploy/paraphraseradd-in/paraphraseradd-in@sha256:f50ed31cc6be5b6a5d4e4b47be4841a3a335f375365a03b4c896fc504681eb24"
+            }
+          ]
+        },
+        "@type": "type.googleapis.com/google.cloud.run.v1.Revision"
+      }
+    },
+    "insertId": "-3ad415c6qu",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "service_name": "paraphraseradd-in",
+        "project_id": "parapluieta",
+        "location": "asia-southeast3",
+        "revision_name": "paraphraseradd-in-00003-5p7",
+        "configuration_name": "paraphraseradd-in"
+      }
+    },
+    "timestamp": "2026-04-04T07:47:25.338819Z",
+    "severity": "ERROR",
+    "logName": "projects/parapluieta/logs/cloudaudit.googleapis.com%2Fsystem_event",
+    "receiveTimestamp": "2026-04-04T07:47:25.582473008Z"
+  }
+]
