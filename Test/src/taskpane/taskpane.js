@@ -1004,7 +1004,7 @@ function setupEventListeners() {
     // 2. Paraphrase Action [cite: 457]
     document.getElementById("paraphrase-btn").onclick = sendPrompt('normal');
     document.getElementById("paraphrase-fast-btn").onclick = sendPrompt('fast');
-    document.getElementById("test-btn").onclick = fetchFailedTest;
+    // document.getElementById("test-btn").onclick = fetchFailedTest;
     // 3. Insert Action [cite: 470]
     document.getElementById("insert-btn").onclick = () => {
         // Logika insertText nanti disini
