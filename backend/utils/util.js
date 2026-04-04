@@ -228,7 +228,7 @@ async function paraPLUIE(S, H) {
     try {
         const parapluieStart = Date.now();
         const response = await client.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-2.5-flash-lite',
             contents: prompt,
             config: generationConfig
         });
