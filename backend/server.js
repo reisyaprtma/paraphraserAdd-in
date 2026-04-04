@@ -83,7 +83,7 @@ app.get('/api/paraphrase/failed-test', (req, res) => {
 
 app.post('/api/paraphrase', async (req, res) => {
     try {
-        const { originalText, tokenizedText, objects } = req.body;
+        const { originalText, tokenizedText, objects, mode } = req.body;
         let iterasi = 0;
 
         // Objek untuk menampung hasil jika 3x percobaan tetap tidak memenuhi threshold
@@ -124,7 +124,8 @@ app.post('/api/paraphrase', async (req, res) => {
                 logId,          // paraphraseLogId  → paraphrase() simpan ke DB
                 originalText,   // originalText
                 tokenizedText,  // tokenizedText
-                iterasi         // iterationNumber (1-based)
+                iterasi,        // iterationNumber (1-based)
+                mode            // mode
             );
 
             if (typeof paraphraseResult === "string") {

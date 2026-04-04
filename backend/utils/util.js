@@ -49,7 +49,7 @@ export function removePlaceholderText(text) {
  * @param {string|null} tokenizedText - Teks bertokenisasi (disimpan ke kolom tokenizedInput)
  * @param {number} iterationNumber    - Nomor iterasi saat ini (1-based)
  */
-export async function paraphrase(sourceText, objects, paraphraseLogId, originalText, tokenizedText, iterationNumber = 1) {
+export async function paraphrase(sourceText, objects, paraphraseLogId, originalText, tokenizedText, iterationNumber = 1, mode) {
     // console.log(`
     //     ---------------------MODE--------------------
     //     ${MODE_PROMPTS['formal']}
@@ -95,9 +95,11 @@ However, your internal thoughts MUST NOT be printed outside the JSON. Summarize 
         // googleApplicationCredentials: JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS),
     });
 
+    const model = mode === 'fast' ? 'gemini-3.1-flash-lite-preview' : 'gemini-3-flash-preview';
+
     const paraphraseStart = Date.now();
     const response = await client.models.generateContent({
-        model: 'gemini-3-flash-preview',
+        model: model,
         config: {
             systemInstruction: sysPrompt,
             temperature: 1,
