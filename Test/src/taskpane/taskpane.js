@@ -10,7 +10,7 @@
 */
 
 // ----------------------------------------- GLOBAL VARIABEL --------------------------
-const BACKEND_URL = "https://paraphraseradd-in-779882211224.asia-southeast3.run.app/";
+const BACKEND_URL = "https://paraphraseradd-in-779882211224.asia-southeast3.run.app/api/paraphrase";
 // let resultPara = ""
 import { htmlToText } from 'html-to-text';
 let finalOoxml = ""
