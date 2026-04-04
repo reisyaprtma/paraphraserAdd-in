@@ -103,6 +103,9 @@ However, your internal thoughts MUST NOT be printed outside the JSON. Summarize 
         config: {
             systemInstruction: sysPrompt,
             temperature: 1,
+            thinkingConfig: {
+                thinkingLevel: "low"
+            },
             responseMimeType: 'application/json',
             responseSchema: responseSchema,
         },
