@@ -308,7 +308,7 @@ async function sendPrompt() {
     const errorBox = document.getElementById("error-box");
 
     // UI Reset: Sembunyikan semua container hasil sebelumnya
-    if (failedresultSection) failedresultSection.classList.add("hidden");
+    if (failedresultSection) failedresultSection.classList.add("!hidden");
     if (resultSection) resultSection.classList.add("hidden");
     if (warningBox) warningBox.classList.add('hidden');
     if (errorBox) errorBox.classList.add('hidden');
@@ -631,7 +631,7 @@ function showFailedResult(tokenizedResultArray, dataArray, parapluieArray, bleuA
 
     // 1. Reset & Show UI
     loadingState.classList.add("hidden");
-    failedresultSection.classList.remove("hidden");
+    failedresultSection.classList.remove("!hidden");
     btn.disabled = false;
     btn.classList.remove("opacity-50");
 
@@ -917,7 +917,7 @@ async function fetchFailedTest() {
     btn.classList.add("opacity-50");
     loadingState.classList.remove("hidden");
     
-    if (failedResultSection) failedResultSection.classList.add("hidden");
+    if (failedResultSection) failedResultSection.classList.add("!hidden");
     if (resultSection) resultSection.classList.add("hidden");
     if (warningBox) warningBox.classList.add("hidden");
     if (errorBox) errorBox.classList.add("hidden");
