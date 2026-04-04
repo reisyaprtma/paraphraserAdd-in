@@ -43,6 +43,22 @@ app.use((req, res, next) => {
 app.use(express.json({ limit: '50mb' }))
 app.use(express.urlencoded({ extended: true }))
 
+// Request timeout middleware (60 detik)
+const REQUEST_TIMEOUT_MS = 60 * 1000;
+app.use((req, res, next) => {
+    req.setTimeout(REQUEST_TIMEOUT_MS);
+    res.setTimeout(REQUEST_TIMEOUT_MS);
+
+    req.on('timeout', () => {
+        if (!res.headersSent) {
+            console.error(`⏱️ Request timeout (${REQUEST_TIMEOUT_MS / 1000}s): ${req.method} ${req.originalUrl}`);
+            res.status(408).json({ error: 'Request timeout: proses melebihi batas waktu 60 detik' });
+        }
+    });
+
+    next();
+});
+
 // Endpoint dummy untuk simulasi hasil gagal (testing frontend)
 app.get('/api/paraphrase/failed-test', (req, res) => {
     const failedResults = {
