@@ -54,7 +54,7 @@ async function updateSelectionInBox() {
     const box = document.getElementById('source-text');
     const statusEl = document.getElementById('selection-status');
     const btn = document.getElementById("paraphrase-btn");
-    const btn2 = document.getElementById("paraphrase-fast-btn");
+    // const btn2 = document.getElementById("paraphrase-fast-btn");
     if (!box) return;
     try {
         await Word.run(async (context) => {
@@ -67,20 +67,20 @@ async function updateSelectionInBox() {
             if (text.length > 2500) {
                 btn.disabled = true;
                 btn.classList.add("opacity-50");
-                btn2.disabled = true;
-                btn2.classList.add("opacity-50");
+                // btn2.disabled = true;
+                // btn2.classList.add("opacity-50");
             }
             else if (text.length === 0) {
                 btn.disabled = true;
                 btn.classList.add("opacity-50");
-                btn2.disabled = true;
-                btn2.classList.add("opacity-50");
+                // btn2.disabled = true;
+                // btn2.classList.add("opacity-50");
             }
             else {
                 btn.disabled = false;
                 btn.classList.remove("opacity-50");
-                btn2.disabled = false;
-                btn2.classList.remove("opacity-50");
+                // btn2.disabled = false;
+                // btn2.classList.remove("opacity-50");
             }
             box.value = text;
             if (statusEl) {
@@ -356,13 +356,13 @@ async function sendPrompt(mode) {
     try {
         const loadingState = document.getElementById("loading-state");
         const btn = document.getElementById("paraphrase-btn");
-        const btn2 = document.getElementById("paraphrase-fast-btn");
+        // const btn2 = document.getElementById("paraphrase-fast-btn");
         // const selectedMode = document.getElementById("paraphrase-mode")
         // UI Transition: Start Loading
         btn.disabled = true;
         btn.classList.add("opacity-50");
-        btn2.disabled = true;
-        btn2.classList.add("opacity-50");
+        // btn2.disabled = true;
+        // btn2.classList.add("opacity-50");
         loadingState.classList.remove("hidden");
         // resultSection.classList.add("hidden"); // Sudah disembunyikan di awal
         console.log(seleksi_teks)
@@ -608,14 +608,14 @@ async function showResult(tokenizedResult, data, parapluie, bleu) {
     const loadingState = document.getElementById("loading-state");
     const resultSection = document.getElementById("result-section");
     const btn = document.getElementById("paraphrase-btn");
-    const btn2 = document.getElementById("paraphrase-fast-btn");
+    // const btn2 = document.getElementById("paraphrase-fast-btn");
 
     loadingState.classList.add("hidden");
     resultSection.classList.remove("hidden");
     btn.disabled = false;
     btn.classList.remove("opacity-50");
-    btn2.disabled = false;
-    btn2.classList.remove("opacity-50");
+    // btn2.disabled = false;
+    // btn2.classList.remove("opacity-50");
 
     console.log("Displayed Text to User:", data);
 
@@ -637,7 +637,7 @@ function showFailedResult(tokenizedResultArray, dataArray, parapluieArray, bleuA
     // starRating.classList.toggle('hidden')
     warningBox.classList.remove('hidden')
     const btn = document.getElementById("paraphrase-btn");
-    const btn2 = document.getElementById("paraphrase-fast-btn");
+    // const btn2 = document.getElementById("paraphrase-fast-btn");
     let mappingData = {
         math: [],
         citations: []
@@ -648,8 +648,8 @@ function showFailedResult(tokenizedResultArray, dataArray, parapluieArray, bleuA
     failedresultSection.classList.remove("!hidden");
     btn.disabled = false;
     btn.classList.remove("opacity-50");
-    btn2.disabled = false;
-    btn2.classList.remove("opacity-50");
+    // btn2.disabled = false;
+    // btn2.classList.remove("opacity-50");
 
     // 2. Process OOXML for EACH result in the array
     // Assuming tokenizedResultArray is an array of token sets corresponding to dataArray
@@ -870,12 +870,12 @@ function showError(msg) {
     // Bisa disambungkan ke elemen UI error di HTML kamu
     const loadingState = document.getElementById("loading-state");
     const btn = document.getElementById("paraphrase-btn");
-    const btn2 = document.getElementById("paraphrase-fast-btn");
+    // const btn2 = document.getElementById("paraphrase-fast-btn");
     loadingState.classList.add("hidden");
     btn.disabled = false;
     btn.classList.remove("opacity-50");
-    btn2.disabled = false;
-    btn2.classList.remove("opacity-50");
+    // btn2.disabled = false;
+    // btn2.classList.remove("opacity-50");
     const errorBox = document.getElementById('error-box')
     const errorMessage = document.getElementById('error-message')
     errorBox.classList.remove('hidden')
@@ -1003,7 +1003,7 @@ function setupEventListeners() {
 
     // 2. Paraphrase Action [cite: 457]
     document.getElementById("paraphrase-btn").onclick = () => sendPrompt('normal');
-    document.getElementById("paraphrase-fast-btn").onclick = () => sendPrompt('fast');
+    // document.getElementById("paraphrase-fast-btn").onclick = () => sendPrompt('fast');
     // document.getElementById("test-btn").onclick = fetchFailedTest;
     // 3. Insert Action [cite: 470]
     document.getElementById("insert-btn").onclick = () => {
