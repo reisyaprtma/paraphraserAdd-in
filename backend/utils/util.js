@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { SYS_PROMPT, PARAPLUIE_PROMPT, MODE_PROMPTS } from "./prompt.js";
+import { buildSysPrompt, PARAPLUIE_PROMPT, MODE_PROMPTS } from "./prompt.js";
 import { GoogleGenAI, ThinkingLevel } from '@google/genai';
 import { bleu } from 'bleu-score';
 import prisma from './prisma.js';
@@ -79,7 +79,7 @@ Remember to think step-by-step about the sentence structure and vocabulary chang
 However, your internal thoughts MUST NOT be printed outside the JSON. 
 </final_instruction>
 `;
-    const sysPrompt = SYS_PROMPT;
+    const sysPrompt = await buildSysPrompt();
 
     const responseSchema = {
         type: "OBJECT",

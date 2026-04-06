@@ -1,3 +1,5 @@
+import prisma from './prisma.js';
+
 const BASE_INSTRUCTION = `
   Look at the samples of a sentence and its intelligible paraphrase:
   1. I don’t know if you are familiar with that. =>
@@ -12,7 +14,47 @@ const BASE_INSTRUCTION = `
   It continued despite the prohibition, which didn’t accomplish anything.
 `;
 
-const SYS_PROMPT = `
+/**
+ * Fetches top-scoring paraphrases from the DB to use as dynamic few-shot examples.
+ * Returns up to 5 unique (tokenizedInput → paraphrasedText) pairs with the best paraPluieScore.
+ */
+async function fetchTopParaphrases() {
+    try {
+        const results = await prisma.$queryRaw`
+            SELECT DISTINCT ON ("tokenizedInput")
+                "tokenizedInput", "paraphrasedText", "paraPluieScore", "bleuScore"
+            FROM "Paraphrase"
+            WHERE "paraPluieScore" > 0
+              AND "bleuScore" <= 0.7
+              AND "tokenizedInput" IS NOT NULL
+            ORDER BY "tokenizedInput", "paraPluieScore" DESC
+            LIMIT 5
+        `;
+        return results;
+    } catch (err) {
+        console.error('⚠️ Failed to fetch top paraphrases for prompt:', err.message);
+        return [];
+    }
+}
+
+/**
+ * Builds the system prompt dynamically, injecting real high-quality paraphrase
+ * examples from the database alongside the static examples.
+ */
+async function buildSysPrompt() {
+    const topParaphrases = await fetchTopParaphrases();
+
+    // Build dynamic examples block from DB results
+    let dynamicExamples = '';
+    if (topParaphrases.length > 0) {
+        dynamicExamples = '\n--- Real high-quality examples from past paraphrases ---\n';
+        topParaphrases.forEach((row, i) => {
+            dynamicExamples += `\nInput: <text>${row.tokenizedInput}</text>\n`;
+            dynamicExamples += `Output: ${row.paraphrasedText}\n`;
+        });
+    }
+
+    return `
 <role>
 You are an expert Linguistic AI specialized in Indonesian academic paraphrasing. 
 You are precise, context-aware, and strictly obedient to constraints.
@@ -39,8 +81,9 @@ Output: Persamaan [[MATH_1]] digunakan untuk menghitung luas area tersebut.
 
 Input: <text>£±∞™£±∞™£±∞™£±∞™</text>
 Output: [ERROR_INVALID_TEXT]
-</examples>
-`
+${dynamicExamples}</examples>
+`;
+}
 
 
 
@@ -126,4 +169,4 @@ const MODE_PROMPTS = {
     `
   };
 
-export { SYS_PROMPT, BASE_INSTRUCTION, MODE_PROMPTS, DEMONSTRATION, PARAPLUIE_PROMPT };
+export { buildSysPrompt, BASE_INSTRUCTION, MODE_PROMPTS, DEMONSTRATION, PARAPLUIE_PROMPT };
