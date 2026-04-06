@@ -27,6 +27,8 @@ async function fetchTopParaphrases() {
             WHERE "paraPluieScore" > 0
               AND "bleuScore" <= 0.7
               AND "tokenizedInput" IS NOT NULL
+              AND LENGTH("tokenizedInput") <= 400
+              AND LENGTH("paraphrasedText") <= 400
             ORDER BY "tokenizedInput", "paraPluieScore" DESC
             LIMIT 5
         `;
