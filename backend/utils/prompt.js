@@ -21,16 +21,15 @@ const BASE_INSTRUCTION = `
 async function fetchTopParaphrases() {
     try {
         const results = await prisma.$queryRaw`
-            SELECT DISTINCT ON ("tokenizedInput")
-                "tokenizedInput", "paraphrasedText", "paraPluieScore", "bleuScore"
+            SELECT "tokenizedInput", "paraphrasedText"
             FROM "Paraphrase"
             WHERE "paraPluieScore" > 0
               AND "bleuScore" <= 0.7
               AND "tokenizedInput" IS NOT NULL
               AND LENGTH("tokenizedInput") <= 400
               AND LENGTH("paraphrasedText") <= 400
-            ORDER BY "tokenizedInput", "paraPluieScore" DESC
-            LIMIT 5
+            ORDER BY "paraPluieScore" DESC
+            LIMIT 5 
         `;
         return results;
     } catch (err) {
