@@ -80,6 +80,7 @@ However, your internal thoughts MUST NOT be printed outside the JSON.
 </final_instruction>
 `;
     const sysPrompt = await buildSysPrompt();
+    console.log("sysPrompt: ", sysPrompt)
 
     const responseSchema = {
         type: "OBJECT",
