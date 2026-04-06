@@ -45,6 +45,7 @@ async function fetchTopParaphrases() {
  */
 async function buildSysPrompt() {
     const topParaphrases = await fetchTopParaphrases();
+    console.log("topParaphrases: ", topParaphrases)
 
     // Build dynamic examples block from DB results
     let dynamicExamples = '';
