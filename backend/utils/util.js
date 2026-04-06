@@ -76,7 +76,7 @@ ${MODE_PROMPTS['formal']}
 
 <final_instruction>
 Remember to think step-by-step about the sentence structure and vocabulary changes. 
-However, your internal thoughts MUST NOT be printed outside the JSON. Summarize your reasoning ONLY inside the "explanation" field. 
+However, your internal thoughts MUST NOT be printed outside the JSON. 
 </final_instruction>
 `;
     const sysPrompt = SYS_PROMPT;
