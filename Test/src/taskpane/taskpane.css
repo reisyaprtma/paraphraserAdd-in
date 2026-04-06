@@ -223,6 +223,33 @@ header {
     color: var(--clr-muted);
     margin-bottom: 10px;
 }
+.help-dropdown {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 8px);
+    width: 200px;
+    background: var(--clr-surface);
+    border: 1px solid var(--clr-border);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-float);
+    z-index: 100;
+    padding: 14px;
+    transform-origin: top right;
+    transition: opacity var(--transition), transform var(--transition);
+}
+
+.help-dropdown.hidden {
+    display: none;
+}
+
+.help-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--clr-muted);
+    margin-bottom: 10px;
+}
 
 /* ── Toggle Switch ───────────────────────────────────────── */
 .toggle-track {

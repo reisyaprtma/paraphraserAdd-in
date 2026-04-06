@@ -55,11 +55,10 @@
                     <button id="settings-btn" title="Pengaturan" class="settings-btn">
                         <i data-lucide="settings" class="w-4 h-4"></i>
                     </button>
-                    <a href="https://forms.gle/NEf3ts4Byxuwc7K89">
-                        <button id="form-btn" title="Formulir Feedback" class="settings-btn">
-                            <i data-lucide="form" class="w-4 h-4"></i>
-                        </button>
-                    </a>
+                    
+                    <button id="help-btn" title="Bantuan" class="settings-btn">
+                        <i data-lucide="info" class="w-4 h-4"></i>
+                    </button>
                 </div>
 
                 <div id="settings-menu" class="settings-dropdown hidden">
@@ -69,6 +68,17 @@
                         <button id="dark-mode-toggle" class="toggle-track">
                             <div id="toggle-circle" class="toggle-thumb"></div>
                         </button>
+                    </div>
+                </div>
+                <div id="help-menu" class="help-dropdown hidden">
+                    <p class="help-label">Bantuan</p>
+                    <div class="flex flex-col items-start justify-between">
+                        <a class="hover:bg-gray-100 w-full rounded-md" href="https://forms.gle/NEf3ts4Byxuwc7K89">
+                            <span class="text-xs font-medium" style="color:var(--clr-text)">Formulir Feedback</span>
+                        </a>
+                        <a class="hover:bg-gray-100 w-full rounded-md" href="https://forms.gle/BYSMDPA6hBjGgVYd6">
+                            <span class="text-xs font-medium" style="color:var(--clr-text)">Kritik & Saran</span>
+                        </a>
                     </div>
                 </div>
             </div>

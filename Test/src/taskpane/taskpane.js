@@ -980,6 +980,8 @@ function setupEventListeners() {
     // 1. Settings & Dark Mode Toggle
     const settingsBtn = document.getElementById("settings-btn");
     const settingsMenu = document.getElementById("settings-menu");
+    const helpBtn = document.getElementById("help-btn");
+    const helpMenu = document.getElementById("help-menu");
     const darkModeToggle = document.getElementById("dark-mode-toggle");
     const warningBox = document.getElementById("warning-box")
     warningBox.classList.add('hidden')
@@ -990,6 +992,12 @@ function setupEventListeners() {
 
     settingsBtn.onclick = () => {
         settingsMenu.classList.toggle("hidden");
+        helpMenu.classList.add("hidden");
+    };
+
+    helpBtn.onclick = () => {
+        helpMenu.classList.toggle("hidden");
+        settingsMenu.classList.add("hidden");
     };
 
     darkModeToggle.onclick = () => {
