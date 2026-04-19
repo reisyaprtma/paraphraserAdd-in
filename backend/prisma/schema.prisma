@@ -52,6 +52,7 @@ model ParaphraseLog {
   errorLog         String?  @db.Text
   iterations       Int      @default(1)
   isSuccessful     Boolean  @default(true)
+  mode             String?  // formal | academic
   
   createdAt        DateTime @default(now())
 
