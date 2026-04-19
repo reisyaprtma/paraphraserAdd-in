@@ -16,19 +16,22 @@ const BASE_INSTRUCTION = `
 
 /**
  * Fetches top-scoring paraphrases from the DB to use as dynamic few-shot examples.
+ * Filters by paraphrase mode via the related ParaphraseLog table.
  * Returns up to 5 unique (tokenizedInput → paraphrasedText) pairs with the best paraPluieScore.
  */
-async function fetchTopParaphrases() {
+async function fetchTopParaphrases(mode) {
     try {
         const results = await prisma.$queryRaw`
-            SELECT "tokenizedInput", "paraphrasedText"
-            FROM "Paraphrase"
-            WHERE "paraPluieScore" > 0
-              AND "bleuScore" <= 0.7
-              AND "tokenizedInput" IS NOT NULL
-              AND LENGTH("tokenizedInput") <= 400
-              AND LENGTH("paraphrasedText") <= 400
-            ORDER BY "paraPluieScore" DESC
+            SELECT p."tokenizedInput", p."paraphrasedText"
+            FROM "Paraphrase" p
+            INNER JOIN "ParaphraseLog" pl ON p."paraphraseLog_id" = pl."id"
+            WHERE p."paraPluieScore" > 0
+              AND p."bleuScore" <= 0.7
+              AND p."tokenizedInput" IS NOT NULL
+              AND LENGTH(p."tokenizedInput") <= 400
+              AND LENGTH(p."paraphrasedText") <= 400
+              AND pl."mode" = ${mode}
+            ORDER BY p."paraPluieScore" DESC
             LIMIT 5 
         `;
         return results;
@@ -42,8 +45,8 @@ async function fetchTopParaphrases() {
  * Builds the system prompt dynamically, injecting real high-quality paraphrase
  * examples from the database alongside the static examples.
  */
-async function buildSysPrompt() {
-    const topParaphrases = await fetchTopParaphrases();
+async function buildSysPrompt(mode) {
+    const topParaphrases = await fetchTopParaphrases(mode);
     console.log("topParaphrases: ", topParaphrases)
 
     // Build dynamic examples block from DB results
@@ -146,28 +149,18 @@ the grand Jiul de Vest River in Romania."
 `
 
 const MODE_PROMPTS = {
-    // Mode Standar: Menjaga keseimbangan perubahan dan makna
-    standard: `
-      Rewrite the following text using Standard mode.
-      Rewrite the text reliably to maintain the original meaning while varying the sentence structure and vocabulary
-    `,
-  
-    // Mode Formal (Paling penting untuk Skripsi) [cite: 40]
+    // Mode Formal: Cocok untuk konteks akademis dan profesional
     formal: `
       Paraphrase this text in Formal mode.
-      Rewrite the text to be sophisticated and professional. Use a corporate or academic tone suitable for a formal audience.
+      Rewrite the text using a formal, professional, and academic tone. The result must be suitable for academic or professional documents such as reports, theses, or official correspondence.
+      Maintain the original meaning precisely. Avoid casual language, slang, or colloquial expressions.
     `,
-  
-    // Mode Shorten (Ringkas)
-    shorten: `
-      Use Shorten mode for this content.
-      Shorten the text to be as concise as possible without affecting its core meaning. Strip away all extra words and fluff to provide a clear, direct message.
-    `,
-  
-    // Mode Expand (Kembangkan)
-    expand: `
-      Apply Expand mode to the following text.
-      Expand the text by adding relevant details and depth. Increase the sentence length and insert as many descriptive words as possible to significantly increase the overall word count.
+
+    // Mode Academic: Fokus pada detail dan penggunaan kata yang tepat untuk konteks akademik
+    academic: `
+      Paraphrase this text in Academic mode.
+      Rewrite the text with precise, discipline-appropriate vocabulary and a rigorous academic writing style. Pay careful attention to technical accuracy and the use of domain-specific terminology.
+      Ensure the paraphrased result is suitable for scholarly publications, academic papers, or research writing. Preserve all factual details and the original argument structure.
     `
   };
 

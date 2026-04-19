@@ -96,6 +96,7 @@ app.post('/api/paraphrase', async (req, res) => {
         console.log("ORIGINAL TEXT: ", originalText)
         console.log("TOKENIZED: ", tokenizedText)
         console.log("OBJECTS", objects)
+        console.log("MODE: ", mode)
         let sourceText = tokenizedText;
         sourceText = removePlaceholderText(sourceText);
 
@@ -132,7 +133,7 @@ app.post('/api/paraphrase', async (req, res) => {
                 console.log("ERROR INVALID TEXT")
                 await prisma.paraphraseLog.update({
                     where: { id: logId },
-                    data: { isSuccessful: false, errorLog: 'Teks tidak valid', iterations: iterasi }
+                    data: { isSuccessful: false, errorLog: 'Teks tidak valid', iterations: iterasi, mode: mode }
                 });
                 return res.status(400).json({ error: 'Teks yang dimasukkan tidak valid' });
             }
@@ -156,7 +157,7 @@ app.post('/api/paraphrase', async (req, res) => {
         if (successResult) {
             await prisma.paraphraseLog.update({
                 where: { id: logId },
-                data: { isSuccessful: true, iterations: iterasi }
+                data: { isSuccessful: true, iterations: iterasi, mode: mode }
             });
             console.log('✅ ParaphraseLog updated (success), id:', logId);
             res.json({ ...successResult, logId });
@@ -164,12 +165,12 @@ app.post('/api/paraphrase', async (req, res) => {
         } else {
             await prisma.paraphraseLog.update({
                 where: { id: logId },
-                data: { isSuccessful: false, iterations: iterasi }
+                data: { isSuccessful: false, iterations: iterasi, mode: mode }
             });
             console.log('⚠️ ParaphraseLog updated (failed threshold), id:', logId);
             res.json({ ...failedResults, logId });
             console.log("failresult:", failedResults)
-        }
+        }//
 
     } catch (e) {
         console.error('Error:', e);
@@ -177,6 +178,7 @@ app.post('/api/paraphrase', async (req, res) => {
             await prisma.paraphraseLog.create({
                 data: {
                     isSuccessful: false,
+                    mode: mode,
                     errorLog: e.message || String(e),
                 }
             });

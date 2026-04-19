@@ -71,7 +71,7 @@ Strict Constraints:
 </task>
 
 <mode>
-${MODE_PROMPTS['formal']}
+${MODE_PROMPTS[mode] || MODE_PROMPTS['formal']}
 </mode>
 
 <final_instruction>
@@ -79,7 +79,7 @@ Remember to think step-by-step about the sentence structure and vocabulary chang
 However, your internal thoughts MUST NOT be printed outside the JSON. 
 </final_instruction>
 `;
-    const sysPrompt = await buildSysPrompt();
+    const sysPrompt = await buildSysPrompt(mode);
     // console.log("sysPrompt: ", sysPrompt)
 
     const responseSchema = {
@@ -96,14 +96,14 @@ However, your internal thoughts MUST NOT be printed outside the JSON.
         // googleApplicationCredentials: JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS),
     });
 
-    const model = mode === 'fast' ? 'gemini-3.1-flash-lite-preview' : 'gemini-3-flash-preview';
+    const model = 'gemini-3-flash-preview';
 
     const paraphraseStart = Date.now();
     const response = await client.models.generateContent({
         model: model,
         config: {
             systemInstruction: sysPrompt,
-            temperature: 1,
+            temperature: 0.3,
             thinkingConfig: {
                 thinkingLevel: "low"
             },
@@ -142,21 +142,21 @@ However, your internal thoughts MUST NOT be printed outside the JSON.
         try {
             await prisma.paraphrase.create({
                 data: {
-                    paraphraseLog_id:              paraphraseLogId,
-                    sourceText:                    originalText ?? sourceText,
-                    tokenizedInput:                tokenizedText ?? null,
-                    paraphrasedText:               paraphrasedText,
-                    iteration:                     iterationNumber,
-                    bleuScore:                     BLEU_score ?? null,
-                    paraPluieScore:                paraPLUIE_score ?? null,
-                    paraphrase_promptTokens:       paraphrase_promptTokens ?? null,
-                    paraphrase_completionTokens:   paraphrase_completionTokens ?? null,
-                    paraphrase_totalTokens:        paraphrase_totalTokens ?? null,
-                    paraphrase_latency:            paraphraseLatency ?? null,
-                    parapluie_promptTokens:        paraPLUIEResult.promptTokens ?? null,
-                    parapluie_completionTokens:    paraPLUIEResult.completionTokens ?? null,
-                    parapluie_totalTokens:         paraPLUIEResult.totalTokens ?? null,
-                    parapluie_latency:             paraPLUIEResult.latency ?? null,
+                    paraphraseLog_id: paraphraseLogId,
+                    sourceText: originalText ?? sourceText,
+                    tokenizedInput: tokenizedText ?? null,
+                    paraphrasedText: paraphrasedText,
+                    iteration: iterationNumber,
+                    bleuScore: BLEU_score ?? null,
+                    paraPluieScore: paraPLUIE_score ?? null,
+                    paraphrase_promptTokens: paraphrase_promptTokens ?? null,
+                    paraphrase_completionTokens: paraphrase_completionTokens ?? null,
+                    paraphrase_totalTokens: paraphrase_totalTokens ?? null,
+                    paraphrase_latency: paraphraseLatency ?? null,
+                    parapluie_promptTokens: paraPLUIEResult.promptTokens ?? null,
+                    parapluie_completionTokens: paraPLUIEResult.completionTokens ?? null,
+                    parapluie_totalTokens: paraPLUIEResult.totalTokens ?? null,
+                    parapluie_latency: paraPLUIEResult.latency ?? null,
                 }
             });
             console.log(`✅ Paraphrase record saved (iteration ${iterationNumber})`);

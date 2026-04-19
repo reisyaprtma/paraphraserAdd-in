@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -55,7 +56,7 @@
                     <button id="settings-btn" title="Pengaturan" class="settings-btn">
                         <i data-lucide="settings" class="w-4 h-4"></i>
                     </button>
-                    
+
                     <button id="help-btn" title="Bantuan" class="settings-btn">
                         <i data-lucide="info" class="w-4 h-4"></i>
                     </button>
@@ -90,10 +91,64 @@
 
         <!-- Input Section -->
         <section id="input-section" class="animate-fade-in-up">
-            <p class="section-label">Teks Terseleksi <span style="font-weight:400;opacity:0.65">(maks 2500
+            
+            <!-- ── Mode Selection ─────────────────────────────── -->
+            <div class="mt-3">
+                <p class="section-label" style="margin-bottom:6px">Mode Parafrase</p>
+                <div id="mode-selector" style="
+                    display: flex;
+                    gap: 8px;
+                    background: var(--clr-surface, rgba(0,0,0,0.06));
+                    border-radius: 10px;
+                    padding: 4px;
+                    border: 1px solid var(--clr-border, rgba(0,0,0,0.08));
+                ">
+                    <button type="button" id="mode-formal" data-mode="formal" class="mode-btn mode-btn--active" style="
+                        flex: 1;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 5px;
+                        padding: 7px 10px;
+                        border-radius: 7px;
+                        border: none;
+                        font-size: 12px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: all 0.2s ease;
+                        background: var(--clr-brand, #B6FF8F);
+                        color: #1a1a1a;
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+                    ">
+                        <i data-lucide="briefcase" class="w-3.5 h-3.5" style="pointer-events:none"></i>
+                        Formal
+                    </button>
+                    <button type="button" id="mode-academic" data-mode="academic" class="mode-btn" style="
+                        flex: 1;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 5px;
+                        padding: 7px 10px;
+                        border-radius: 7px;
+                        border: none;
+                        font-size: 12px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: all 0.2s ease;
+                        background: transparent;
+                        color: var(--clr-text, #555);
+                    ">
+                        <i data-lucide="graduation-cap" class="w-3.5 h-3.5" style="pointer-events:none"></i>
+                        Academik
+                    </button>
+                </div>
+            </div>
+            <p class="section-label" style="margin-top: 10px;">Teks Terseleksi <span style="font-weight:400;opacity:0.65">(maks 2500
                     karakter)</span></p>
             <textarea id="source-text" class="source-textarea" readonly
                 placeholder="Seleksi teks di dokumen Word untuk memulai…"></textarea>
+
             <div class="mt-1.5">
                 <span id="selection-status" class="status-badge">
                     <i data-lucide="mouse-pointer-2" class="w-3 h-3"></i>
@@ -229,4 +284,5 @@
         lucide.createIcons();
     </script>
 </body>
+
 </html>

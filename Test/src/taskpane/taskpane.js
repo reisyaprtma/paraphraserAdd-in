@@ -935,7 +935,7 @@ async function fetchFailedTest() {
     btn.disabled = true;
     btn.classList.add("opacity-50");
     loadingState.classList.remove("hidden");
-    
+
     if (failedResultSection) failedResultSection.classList.add("!hidden");
     if (resultSection) resultSection.classList.add("hidden");
     if (warningBox) warningBox.classList.add("hidden");
@@ -1009,8 +1009,33 @@ function setupEventListeners() {
         }
     };
 
+    // 2. Paraphrase Mode Selector
+    const modeBtns = document.querySelectorAll('.mode-btn');
+    // Set default active mode attribute on the Formal button
+    const defaultMode = document.getElementById('mode-formal');
+    if (defaultMode) defaultMode.setAttribute('data-active', 'true');
+
+    modeBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            modeBtns.forEach(b => {
+                b.removeAttribute('data-active');
+                b.style.background = 'transparent';
+                b.style.color = 'var(--clr-text, #555)';
+                b.style.boxShadow = 'none';
+            });
+            btn.setAttribute('data-active', 'true');
+            btn.style.background = 'var(--clr-brand, #B6FF8F)';
+            btn.style.color = '#1a1a1a';
+            btn.style.boxShadow = '0 2px 8px rgba(0,0,0,0.12)';
+        });
+    });
+
     // 2. Paraphrase Action [cite: 457]
-    document.getElementById("paraphrase-btn").onclick = () => sendPrompt('normal');
+    document.getElementById("paraphrase-btn").onclick = () => {
+        const activeMode = document.querySelector('.mode-btn[data-active="true"]');
+        const mode = activeMode ? activeMode.getAttribute('data-mode') : 'formal';
+        sendPrompt(mode);
+    };
     // document.getElementById("paraphrase-fast-btn").onclick = () => sendPrompt('fast');
     // document.getElementById("test-btn").onclick = fetchFailedTest;
     // 3. Insert Action [cite: 470]
