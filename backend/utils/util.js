@@ -103,7 +103,7 @@ However, your internal thoughts MUST NOT be printed outside the JSON.
         model: model,
         config: {
             systemInstruction: sysPrompt,
-            temperature: 0.3,
+            temperature: 0.7,
             thinkingConfig: {
                 thinkingLevel: "low"
             },

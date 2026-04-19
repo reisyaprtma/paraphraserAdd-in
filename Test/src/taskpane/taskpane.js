@@ -140,68 +140,78 @@ async function extractCombinedTokens() {
         citations: []
     };
     let finalTokenizedText = "";
+    
+    // ❌ let seleksi_teks = ""; <-- BARIS INI SUDAH DIHAPUS AGAR MENGGUNAKAN GLOBAL VARIABLE
 
     await Word.run(async (context) => {
         // 1️⃣ SETUP & LOAD AWAL
         const selection = context.document.getSelection();
         const contentControls = selection.contentControls;
+        
         selection.load("text");
-        const html = selection.getHtml()
-
-        // Load text agar bisa disimpan sebagai raw text sitasi
         contentControls.load("items/text, items/tag");
+        
         const mainOoxmlResult = selection.getOoxml();
         await context.sync();
-        const plainTextWithStructure = htmlToText(html.value, {
-            wordwrap: false,
-            selectors: [
-                // { selector: 'h1', options: { uppercase: true } },
-                { selector: 'table', options: { uppercaseHeader: true } },
-                { selector: 'a', options: { ignoreHref: true } } // Biar nggak muncul link (http://...)
-            ]
-        });
-        seleksi_teks = selection.text
-        console.log(seleksi_teks)
 
-        // 2️⃣ QUEUE OOXML REQUESTS
-        const citationRequests = contentControls.items.map((cc) => {
-            return {
-                text: cc.text, // Simpan teks asli sitasi (misal: "(Anggita, 2024)")
-                tag: cc.tag,
-                ooxmlProxy: cc.getOoxml()
-            };
-        });
-
-        await context.sync();
+        // ✅ SEKARANG INI AKAN MENGISI VARIABEL GLOBAL
+        seleksi_teks = selection.text;
+        console.log("Original Text:", seleksi_teks);
 
         // ---------------------------------------------------------
         // MULAI PEMROSESAN DATA
         // ---------------------------------------------------------
-
         let currentXml = mainOoxmlResult.value || "";
         if (!currentXml) return;
 
-        // 3️⃣ PASS 1: MATH TOKENIZATION
+        let citationIndex = 0;
+
+        // 2️⃣ PASS 1: MENDELEY LAMA TOKENIZATION (Menggunakan RegEx)
+        // RegEx diperlebar untuk memakan seluruh blok Field dari "begin" sampai "end"
+        const cslRegex = /<w:fldChar[^>]*w:fldCharType="begin"[^>]*>[\s\S]*?ADDIN CSL_CITATION[\s\S]*?<w:fldChar[^>]*w:fldCharType="end"[^>]*>/gi;
+        
+        currentXml = currentXml.replace(cslRegex, (match) => {
+            const token = `[[CIT_${citationIndex + 1}]]`;
+            
+            let extractedRawText = "[Referensi]";
+            try {
+                const rawTextMatch = match.match(/"plainTextFormattedCitation":"(.*?)"/) || match.match(/"formattedCitation":"(.*?)"/);
+                if (rawTextMatch && rawTextMatch[1]) {
+                    extractedRawText = rawTextMatch[1];
+                }
+            } catch (error) {
+                console.warn("Gagal mengekstrak raw text:", error);
+            }
+            
+            mappingData.citations.push({
+                token: token,
+                ooxml: match, // Sekarang ini menyimpan blok Field yang UTUH sempurna
+                raw: extractedRawText,
+                isRegex: true 
+            });
+            citationIndex++;
+            return token; // Menggantikan seluruh blok (termasuk [4]) dengan [[CIT_n]]
+        });
+        console.log("currentXml: ============================================================\n", currentXml)
+
+        // 3️⃣ PASS 2: MATH TOKENIZATION
         let mathIndex = 0;
         const oMathRegex = /<m:oMath[\s\S]*?<\/m:oMath>|<m:oMathPara[\s\S]*?<\/m:oMathPara>/gi;
 
         currentXml = currentXml.replace(oMathRegex, (match) => {
             const token = ` [[MATH_${mathIndex + 1}]] `;
-
-            // 🔥 RAW TEXT MATH: Hapus semua tag XML agar sisa angka/hurufnya saja
-            // Contoh: <m:t>E</m:t><m:t>=</m:t>... menjadi "E=mc^2"
             let rawMath = match.replace(/<[^>]+>/g, "").trim();
 
             mappingData.math.push({
                 token: token.trim(),
                 ooxml: match,
-                raw: rawMath // <--- Simpan Raw Text Math
+                raw: rawMath 
             });
             mathIndex++;
             return token;
         });
 
-        // 4️⃣ PASS 2: CLEANING XML TO TEXT (Sama seperti sebelumnya)
+        // 4️⃣ PASS 3: CLEANING XML TO TEXT
         let textBase = currentXml
             .replace(/<\/w:p>/gi, "\n")
             .replace(/<w:br\/>/gi, "\n")
@@ -214,18 +224,29 @@ async function extractCombinedTokens() {
             .replace(/&apos;/g, "'")
             .replace(/[ \t]+/g, " ").trim();
 
-        // 5️⃣ PASS 3: CITATION TOKENIZATION
-        citationRequests.forEach((req, index) => {
-            const citToken = `[[CIT_${index + 1}]]`;
+        // 5️⃣ PASS 4: MENDELEY BARU TOKENIZATION (Content Controls)
+        const citationRequests = contentControls.items.map((cc) => {
+            return {
+                text: cc.text, 
+                ooxmlProxy: cc.getOoxml()
+            };
+        });
+
+        await context.sync(); // Wajib sync lagi karena getOoxml() bikin proxy baru
+
+        citationRequests.forEach((req) => {
+            const citToken = `[[CIT_${citationIndex + 1}]]`;
 
             mappingData.citations.push({
                 token: citToken,
-                ooxml: req.ooxmlProxy.value,
-                raw: req.text // <--- Simpan Raw Text Sitasi dari Word
+                ooxml: req.ooxmlProxy.value, 
+                raw: req.text,
+                isRegex: false
             });
 
-            // Replace Text asli dengan Token
+            // Ganti teks asli dengan token
             textBase = textBase.split(req.text).join(citToken);
+            citationIndex++;
         });
 
         finalTokenizedText = textBase;
@@ -237,7 +258,6 @@ async function extractCombinedTokens() {
         object: mappingData
     };
 }
-
 // Helper: Log error ke database via backend
 async function logErrorToDatabase(errorMessage) {
     try {
@@ -429,15 +449,18 @@ function ooxmlResult(resultPara, objects) {
                         // jadi isinya tetap <m:oMath> (Aman, tidak double).
                     }
                     else if (isCit) {
-                        // KASUS CITATION: Extract Body dulu
-                        contentToInsert = extractBodyFromOoxml(mappingFound.ooxml);
-
-                        // Buang kulit paragraf (<w:p>)
-                        contentToInsert = contentToInsert
-                            .replace(/<w:p [^>]*>/g, "")
-                            .replace(/<w:p>/g, "")
-                            .replace(/<\/w:p>/g, "")
-                            .replace(/<w:sectPr[^>]*>[\s\S]*?<\/w:sectPr>/g, "");
+                        if (mappingFound.isRegex) {
+                            // Cukup bungkus kembali dengan <w:r> untuk menjaga keseimbangan tag XML
+                            contentToInsert = `<w:r>${mappingFound.ooxml}</w:r>`; 
+                        } else {
+                            // Jika dari Mendeley Baru (Content Controls), ekstrak body-nya seperti biasa
+                            contentToInsert = extractBodyFromOoxml(mappingFound.ooxml);
+                            contentToInsert = contentToInsert
+                                .replace(/<w:p [^>]*>/g, "")
+                                .replace(/<w:p>/g, "")
+                                .replace(/<\/w:p>/g, "")
+                                .replace(/<w:sectPr[^>]*>[\s\S]*?<\/w:sectPr>/g, "");
+                        }
                     }
 
                     newOoxmlBody += contentToInsert;
