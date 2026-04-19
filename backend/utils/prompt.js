@@ -151,16 +151,45 @@ the grand Jiul de Vest River in Romania."
 const MODE_PROMPTS = {
     // Mode Formal: Cocok untuk konteks akademis dan profesional
     formal: `
-      Paraphrase this text in Formal mode.
-      Rewrite the text using a formal, professional, and academic tone. The result must be suitable for academic or professional documents such as reports, theses, or official correspondence.
-      Maintain the original meaning precisely. Avoid casual language, slang, or colloquial expressions.
+      Paraphrase the following text in Formal mode.
+
+      Rewrite the text using a clear, professional, and polite tone suitable for general formal communication such as reports or official documents.
+
+      Guidelines:
+      - Preserve the original meaning exactly.
+      - Use standard, commonly understood vocabulary (avoid technical or domain-specific jargon unless already present).
+      - Improve sentence clarity and readability.
+      - Avoid informal expressions, slang, or conversational tone.
+      - Keep sentence structure relatively simple and straightforward.
+
+      Do NOT:
+      - Introduce complex academic terminology.
+      - Make the text overly abstract or theoretical.
+      - Change the level of detail.
+
+      Output should sound professional, but still easy to read and direct.
     `,
 
     // Mode Academic: Fokus pada detail dan penggunaan kata yang tepat untuk konteks akademik
     academic: `
-      Paraphrase this text in Academic mode.
-      Rewrite the text with precise, discipline-appropriate vocabulary and a rigorous academic writing style. Pay careful attention to technical accuracy and the use of domain-specific terminology.
-      Ensure the paraphrased result is suitable for scholarly publications, academic papers, or research writing. Preserve all factual details and the original argument structure.
+      Paraphrase the following text in Academic mode.
+
+      Rewrite the text using a formal academic writing style suitable for scholarly works such as journal articles, theses, or research papers.
+
+      Guidelines:
+      - Preserve the original meaning, details, and argument structure precisely.
+      - Use more precise, formal, and discipline-appropriate vocabulary.
+      - Apply an objective and impersonal tone (avoid subjective or emotional wording).
+      - Where appropriate, use more complex sentence structures to reflect academic style.
+      - Maintain logical relationships (e.g., cause-effect, comparison, emphasis).
+
+      Do NOT:
+      - Simplify important information.
+      - Omit technical terms, key concepts, or numerical data.
+      - Use conversational or overly general wording.
+
+      Output should sound like it belongs in an academic paper.
+
     `
   };
 
