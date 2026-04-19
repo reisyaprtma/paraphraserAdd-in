@@ -17,6 +17,8 @@ COPY prisma ./prisma/
 # Hapus --production agar devDependencies ikut terinstall untuk 'prisma generate' saat postinstall
 RUN npm install
 
+RUN npx prisma generate
+
 # Salin seluruh kode aplikasi ke dalam container
 COPY . .
 
