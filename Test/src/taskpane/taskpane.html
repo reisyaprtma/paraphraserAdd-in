@@ -251,90 +251,79 @@
             </div>
 
             <!-- Feedback Card -->
-            <div class="card" style="padding:14px;display:flex;flex-direction:column;gap:10px">
-                <p class="section-label" style="margin-bottom:0">Makna hasil parafrase sesuai dengan teks asli</p>
-
-                <div class="flex items-center justify-center gap-1" id="star-rating-semantic">
-                    <button type="button" class="star-btn" data-value="1">
-                        <i data-lucide="star" class="w-6 h-6 text-gray-300 transition-colors pointer-events-none"></i>
-                    </button>
-                    <button type="button" class="star-btn" data-value="2">
-                        <i data-lucide="star" class="w-6 h-6 text-gray-300 transition-colors pointer-events-none"></i>
-                    </button>
-                    <button type="button" class="star-btn" data-value="3">
-                        <i data-lucide="star" class="w-6 h-6 text-gray-300 transition-colors pointer-events-none"></i>
-                    </button>
-                    <button type="button" class="star-btn" data-value="4">
-                        <i data-lucide="star" class="w-6 h-6 text-gray-300 transition-colors pointer-events-none"></i>
-                    </button>
-                    <button type="button" class="star-btn" data-value="5">
-                        <i data-lucide="star" class="w-6 h-6 text-gray-300 transition-colors pointer-events-none"></i>
-                    </button>
-                </div>
-                <p class="section-label" style="margin-bottom:0">Kosakata beragam/berbeda dibandingkan teks asli</p>
-
-                <div class="flex items-center justify-center gap-1" id="star-rating-lexical">
-                    <button type="button" class="star-btn" data-value="1">
-                        <i data-lucide="star" class="w-6 h-6 text-gray-300 transition-colors pointer-events-none"></i>
-                    </button>
-                    <button type="button" class="star-btn" data-value="2">
-                        <i data-lucide="star" class="w-6 h-6 text-gray-300 transition-colors pointer-events-none"></i>
-                    </button>
-                    <button type="button" class="star-btn" data-value="3">
-                        <i data-lucide="star" class="w-6 h-6 text-gray-300 transition-colors pointer-events-none"></i>
-                    </button>
-                    <button type="button" class="star-btn" data-value="4">
-                        <i data-lucide="star" class="w-6 h-6 text-gray-300 transition-colors pointer-events-none"></i>
-                    </button>
-                    <button type="button" class="star-btn" data-value="5">
-                        <i data-lucide="star" class="w-6 h-6 text-gray-300 transition-colors pointer-events-none"></i>
-                    </button>
-                </div>
-                <p class="section-label" style="margin-bottom:0">Tata bahasa akurat</p>
-
-                <div class="flex items-center justify-center gap-1" id="star-rating-gramatical">
-                    <button type="button" class="star-btn" data-value="1">
-                        <i data-lucide="star" class="w-6 h-6 text-gray-300 transition-colors pointer-events-none"></i>
-                    </button>
-                    <button type="button" class="star-btn" data-value="2">
-                        <i data-lucide="star" class="w-6 h-6 text-gray-300 transition-colors pointer-events-none"></i>
-                    </button>
-                    <button type="button" class="star-btn" data-value="3">
-                        <i data-lucide="star" class="w-6 h-6 text-gray-300 transition-colors pointer-events-none"></i>
-                    </button>
-                    <button type="button" class="star-btn" data-value="4">
-                        <i data-lucide="star" class="w-6 h-6 text-gray-300 transition-colors pointer-events-none"></i>
-                    </button>
-                    <button type="button" class="star-btn" data-value="5">
-                        <i data-lucide="star" class="w-6 h-6 text-gray-300 transition-colors pointer-events-none"></i>
-                    </button>
-                </div>
-                <p class="section-label" style="margin-bottom:0">Struktur kalimat berubah dan variatif</p>
-
-                <div class="flex items-center justify-center gap-1" id="star-rating-syntactic">
-                    <button type="button" class="star-btn" data-value="1">
-                        <i data-lucide="star" class="w-6 h-6 text-gray-300 transition-colors pointer-events-none"></i>
-                    </button>
-                    <button type="button" class="star-btn" data-value="2">
-                        <i data-lucide="star" class="w-6 h-6 text-gray-300 transition-colors pointer-events-none"></i>
-                    </button>
-                    <button type="button" class="star-btn" data-value="3">
-                        <i data-lucide="star" class="w-6 h-6 text-gray-300 transition-colors pointer-events-none"></i>
-                    </button>
-                    <button type="button" class="star-btn" data-value="4">
-                        <i data-lucide="star" class="w-6 h-6 text-gray-300 transition-colors pointer-events-none"></i>
-                    </button>
-                    <button type="button" class="star-btn" data-value="5">
-                        <i data-lucide="star" class="w-6 h-6 text-gray-300 transition-colors pointer-events-none"></i>
-                    </button>
+            <div class="card" style="overflow:hidden">
+                <!-- Card Header -->
+                <div style="padding:10px 14px 8px;display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--clr-border)">
+                    <i data-lucide="star" class="w-3.5 h-3.5" style="color:var(--clr-brand)"></i>
+                    <span class="section-label" style="margin-bottom:0;font-weight:700">Beri Penilaian</span>
                 </div>
 
-                <textarea id="feedback-comment" rows="2" class="feedback-textarea"
-                    placeholder="Ada saran atau kendala? (Opsional)"></textarea>
+                <!-- Rating Rows -->
+                <div style="display:flex;flex-direction:column;padding:6px 0">
 
-                <button id="submit-feedback-btn" class="btn-submit-feedback">
-                    Kirim Penilaian
-                </button>
+                    <!-- Row: Makna -->
+                    <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 14px;gap:8px">
+                        <span style="font-size:11px;color:var(--clr-text);opacity:0.8;flex:1;line-height:1.3">Makna sesuai teks asli</span>
+                        <div id="star-rating-semantic" style="display:flex;gap:1px;flex-shrink:0">
+                            <button type="button" class="star-btn" data-value="1"><i data-lucide="star" class="w-4 h-4 text-gray-300 transition-colors pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="2"><i data-lucide="star" class="w-4 h-4 text-gray-300 transition-colors pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="3"><i data-lucide="star" class="w-4 h-4 text-gray-300 transition-colors pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="4"><i data-lucide="star" class="w-4 h-4 text-gray-300 transition-colors pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="5"><i data-lucide="star" class="w-4 h-4 text-gray-300 transition-colors pointer-events-none"></i></button>
+                        </div>
+                    </div>
+
+                    <div style="height:1px;background:var(--clr-border);margin:0 14px;opacity:0.5"></div>
+
+                    <!-- Row: Kosakata -->
+                    <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 14px;gap:8px">
+                        <span style="font-size:11px;color:var(--clr-text);opacity:0.8;flex:1;line-height:1.3">Kosakata beragam</span>
+                        <div id="star-rating-lexical" style="display:flex;gap:1px;flex-shrink:0">
+                            <button type="button" class="star-btn" data-value="1"><i data-lucide="star" class="w-4 h-4 text-gray-300 transition-colors pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="2"><i data-lucide="star" class="w-4 h-4 text-gray-300 transition-colors pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="3"><i data-lucide="star" class="w-4 h-4 text-gray-300 transition-colors pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="4"><i data-lucide="star" class="w-4 h-4 text-gray-300 transition-colors pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="5"><i data-lucide="star" class="w-4 h-4 text-gray-300 transition-colors pointer-events-none"></i></button>
+                        </div>
+                    </div>
+
+                    <div style="height:1px;background:var(--clr-border);margin:0 14px;opacity:0.5"></div>
+
+                    <!-- Row: Tata Bahasa -->
+                    <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 14px;gap:8px">
+                        <span style="font-size:11px;color:var(--clr-text);opacity:0.8;flex:1;line-height:1.3">Tata bahasa akurat</span>
+                        <div id="star-rating-gramatical" style="display:flex;gap:1px;flex-shrink:0">
+                            <button type="button" class="star-btn" data-value="1"><i data-lucide="star" class="w-4 h-4 text-gray-300 transition-colors pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="2"><i data-lucide="star" class="w-4 h-4 text-gray-300 transition-colors pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="3"><i data-lucide="star" class="w-4 h-4 text-gray-300 transition-colors pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="4"><i data-lucide="star" class="w-4 h-4 text-gray-300 transition-colors pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="5"><i data-lucide="star" class="w-4 h-4 text-gray-300 transition-colors pointer-events-none"></i></button>
+                        </div>
+                    </div>
+
+                    <div style="height:1px;background:var(--clr-border);margin:0 14px;opacity:0.5"></div>
+
+                    <!-- Row: Struktur Kalimat -->
+                    <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 14px;gap:8px">
+                        <span style="font-size:11px;color:var(--clr-text);opacity:0.8;flex:1;line-height:1.3">Struktur kalimat variatif</span>
+                        <div id="star-rating-syntactic" style="display:flex;gap:1px;flex-shrink:0">
+                            <button type="button" class="star-btn" data-value="1"><i data-lucide="star" class="w-4 h-4 text-gray-300 transition-colors pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="2"><i data-lucide="star" class="w-4 h-4 text-gray-300 transition-colors pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="3"><i data-lucide="star" class="w-4 h-4 text-gray-300 transition-colors pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="4"><i data-lucide="star" class="w-4 h-4 text-gray-300 transition-colors pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="5"><i data-lucide="star" class="w-4 h-4 text-gray-300 transition-colors pointer-events-none"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comment & Submit -->
+                <div style="padding:8px 14px 12px;display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--clr-border)">
+                    <textarea id="feedback-comment" rows="2" class="feedback-textarea"
+                        placeholder="Ada saran atau kendala? (Opsional)"></textarea>
+                    <button id="submit-feedback-btn" class="btn-submit-feedback">
+                        Kirim Penilaian
+                    </button>
+                </div>
             </div>
 
         </section>
