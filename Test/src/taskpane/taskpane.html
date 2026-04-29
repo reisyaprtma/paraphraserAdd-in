@@ -47,7 +47,7 @@
             <!-- Brand -->
             <div class="flex items-center gap-2.5">
                 <!-- <div class="brand-logo float-1">fT</div> -->
-                <h1 class="brand-name">Paraphraser</h1>
+                <h1 class="brand-name">FrasaTwist</h1>
             </div>
 
             <!-- Settings -->
@@ -140,7 +140,7 @@
                         color: var(--clr-text, #555);
                     ">
                         <i data-lucide="graduation-cap" class="w-3.5 h-3.5" style="pointer-events:none"></i>
-                        Academik
+                        Akademik
                     </button>
                 </div>
             </div>
@@ -222,11 +222,22 @@
                     <div id="result-content"></div>
                 </div>
 
+                <!-- Sentence Tracker Minimalis -->
+                <div id="sentence-tracker" class="flex items-center justify-between px-4 py-2 border-b" style="border-color: var(--clr-border); background: rgba(0,0,0,0.015);">
+                    <button id="sentence-prev" class="btn-icon" style="width:24px;height:24px" title="Kalimat Sebelumnya" disabled>
+                        <i data-lucide="chevron-left" class="w-3.5 h-3.5"></i>
+                    </button>
+                    <span id="sentence-position" class="text-[11px] font-semibold tracking-wide text-gray-500 uppercase">Semua kalimat</span>
+                    <button id="sentence-next" class="btn-icon" style="width:24px;height:24px" title="Kalimat Berikutnya" disabled>
+                        <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                    </button>
+                </div>
+
                 <!-- Card Footer: counts + action buttons -->
                 <div class="card-footer">
                     <div class="diff-count">
-                        <span class="removed">− <span id="removal-count"></span></span>
-                        <span class="added">+ <span id="addition-count"></span></span>
+                        <!-- <span class="removed">− <span id="removal-count"></span></span> -->
+                        <span class="section-label">Jumlah Kata: <span id="addition-count"></span></span>
                     </div>
                     <div class="flex gap-2">
                         <button id="copy-btn" class="btn-icon" title="Salin Teks">

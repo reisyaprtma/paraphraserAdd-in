@@ -10,7 +10,9 @@
 */
 
 // ----------------------------------------- GLOBAL VARIABEL --------------------------
+// const BACKEND_URL = "http://localhost:8000/api/paraphrase";
 const BACKEND_URL = "https://paraphraseradd-in-779882211224.asia-southeast3.run.app/api/paraphrase";
+
 // let resultPara = ""
 import { htmlToText } from 'html-to-text';
 let finalOoxml = ""
@@ -63,6 +65,16 @@ async function updateSelectionInBox() {
             await context.sync();
 
             const text = selection.text || '';
+            const segmenter = new Intl.Segmenter('en', { granularity: 'word' });
+            const segments = segmenter.segment(text);
+
+            // Use an iterator to avoid memory issues with huge strings
+            let count = 0;
+            for (const segment of segments) {
+                if (segment.isWordLike) count++;
+            }
+            console.log(count); // Output: 6
+
 
             if (text.length > 2500) {
                 btn.disabled = true;
@@ -91,7 +103,7 @@ async function updateSelectionInBox() {
                     statusEl.classList.add('bg-red-100');
                     statusEl.classList.add('text-red-500');
                 } else if (text.length > 0) {
-                    statusEl.innerHTML = `<i data-lucide="check" class="w-3 h-3"></i> ${text.length} karakter terseleksi`;
+                    statusEl.innerHTML = `<i data-lucide="check" class="w-3 h-3"></i> ${count} kata terseleksi`;
                     statusEl.classList.add('active');
                 } else {
                     statusEl.innerHTML = `<i data-lucide="mouse-pointer-2" class="w-3 h-3"></i> Tidak ada seleksi`;
@@ -519,6 +531,10 @@ function escapeXml(unsafe) {
 }
 
 //------------------------------------------ SHOW RESULT AND INSERT ---------------------
+// ── Sentence Tracker State ──
+let sentenceSpans = [];
+let currentSentenceIndex = -1; // -1 = show all
+
 function renderStackedDiff(original, paraphrased) {
     const diffs = Diff.diffWords(original, paraphrased);
 
@@ -588,8 +604,12 @@ function renderStackedDiff(original, paraphrased) {
     // Flush sisa buffer di akhir (jika kalimat diakhiri dengan perubahan)
     flushBuffer();
 
-    // Output ke DOM
+    // Output ke DOM (tanpa modifikasi HTML structure)
     document.getElementById("result-content").innerHTML = unifiedHtml;
+
+    // ── Sentence Tracking: Post-process DOM ──
+    setupSentenceTracking(paraphrased);
+
     const diffToggle = document.getElementById("diff-toggle");
     const toggleCircle2 = document.getElementById("toggle-circle-2");
     // 1. Add the dot for the class selector
@@ -623,8 +643,290 @@ function renderStackedDiff(original, paraphrased) {
         };
     }
     // Update Counter
-    if (document.getElementById("removal-count")) document.getElementById("removal-count").innerText = remCount;
-    if (document.getElementById("addition-count")) document.getElementById("addition-count").innerText = addCount;
+    // if (document.getElementById("removal-count")) document.getElementById("removal-count").innerText = remCount;
+    // if (document.getElementById("addition-count")) document.getElementById("addition-count").innerText = addCount;
+    const segmenter = new Intl.Segmenter('id', { granularity: 'word' });
+    const segments = segmenter.segment(paraphrased);
+
+    // Use an iterator to avoid memory issues with huge strings
+    let count = 0;
+    for (const segment of segments) {
+        if (segment.isWordLike) count++;
+    }
+    console.log("jumlah kata: ", count); // Output: 6
+    document.getElementById("addition-count").innerText = `${count} Kata`;   
+}
+
+/**
+ * Cari posisi karakter dimana kalimat baru dimulai
+ * Berdasarkan tanda baca akhir kalimat (. ? !) yang diikuti spasi
+ */
+function findSentenceBoundaries(text) {
+    const boundaries = [0]; // Kalimat pertama mulai di 0
+    const regex = /[.!?]\s+/g;
+    let match;
+    
+    while ((match = regex.exec(text)) !== null) {
+        const boundaryPos = match.index + match[0].length;
+        if (boundaryPos < text.length) {
+            boundaries.push(boundaryPos);
+        }
+    }
+    
+    return boundaries;
+}
+
+/**
+ * POST-PROCESSING APPROACH: Setelah diff HTML dirender ke DOM,
+ * walk semua child span, track posisi teks visible (skip removal-highlight),
+ * dan assign data-sentence attribute ke setiap span.
+ * Jika suatu span memuat boundary kalimat, split span tersebut
+ * menjadi 2+ span via DOM cloneNode (HTML selalu valid).
+ */
+function setupSentenceTracking(paraphrasedText) {
+    const container = document.getElementById('result-content');
+    if (!container) return;
+    
+    // Hitung sentence boundaries dari teks parafrase
+    const boundaries = findSentenceBoundaries(paraphrasedText);
+    const totalSentences = boundaries.length;
+    
+    // Ambil semua child element saat ini
+    const children = Array.from(container.children);
+    
+    if (children.length === 0) {
+        initSentenceTracker();
+        return;
+    }
+    
+    // Jika cuma 1 kalimat, mark semua sebagai sentence 0
+    if (totalSentences <= 1) {
+        children.forEach(child => {
+            child.setAttribute('data-sentence', '0');
+            child.classList.add('sentence-span');
+        });
+        initSentenceTracker();
+        return;
+    }
+    
+    // Walk children, track posisi teks visible, assign sentence
+    let visiblePos = 0;
+    let curSentence = 0;
+    
+    children.forEach(child => {
+        if (child.nodeType !== Node.ELEMENT_NODE) return;
+        
+        const isRemoved = child.classList.contains('removal-highlight');
+        
+        if (isRemoved) {
+            // Teks dihapus: assign ke kalimat saat ini, JANGAN advance posisi
+            child.setAttribute('data-sentence', String(curSentence));
+            child.classList.add('sentence-span');
+            return;
+        }
+        
+        // Untuk teks visible (unchanged/addition): cek apakah ada boundary crossing
+        const text = child.textContent || '';
+        const startPos = visiblePos;
+        const endPos = visiblePos + text.length;
+        
+        // Cari semua boundaries yang jatuh di dalam rentang span ini
+        const crossings = [];
+        for (let b = 0; b < boundaries.length; b++) {
+            if (boundaries[b] > startPos && boundaries[b] < endPos) {
+                crossings.push({
+                    offset: boundaries[b] - startPos,  // offset relatif dalam teks span
+                    sentenceIdx: b
+                });
+            }
+        }
+        
+        if (crossings.length === 0) {
+            // Tidak ada boundary crossing, simple
+            child.setAttribute('data-sentence', String(curSentence));
+            child.classList.add('sentence-span');
+        } else {
+            // Perlu split span ini di titik-titik boundary
+            const fragment = document.createDocumentFragment();
+            let lastOffset = 0;
+            let segSentence = curSentence;
+            
+            crossings.forEach(({ offset, sentenceIdx }) => {
+                const segText = text.substring(lastOffset, offset);
+                if (segText.length > 0) {
+                    const newSpan = child.cloneNode(false); // clone tanpa children
+                    newSpan.textContent = segText;
+                    newSpan.setAttribute('data-sentence', String(segSentence));
+                    newSpan.classList.add('sentence-span');
+                    fragment.appendChild(newSpan);
+                }
+                segSentence = sentenceIdx;
+                lastOffset = offset;
+            });
+            
+            // Sisa teks setelah boundary terakhir
+            const remaining = text.substring(lastOffset);
+            if (remaining.length > 0) {
+                const newSpan = child.cloneNode(false);
+                newSpan.textContent = remaining;
+                newSpan.setAttribute('data-sentence', String(segSentence));
+                newSpan.classList.add('sentence-span');
+                fragment.appendChild(newSpan);
+            }
+            
+            child.replaceWith(fragment);
+            curSentence = segSentence;
+        }
+        
+        // Advance posisi visible
+        visiblePos = endPos;
+        
+        // Update curSentence berdasarkan posisi terkini
+        while (curSentence < boundaries.length - 1 && visiblePos >= boundaries[curSentence + 1]) {
+            curSentence++;
+        }
+    });
+    
+    initSentenceTracker();
+}
+
+/**
+ * Inisialisasi sentence tracker UI
+ * Menggunakan data-sentence attribute, bukan .sentence-span wrapping
+ */
+function initSentenceTracker() {
+    const container = document.getElementById('result-content');
+    if (!container) return;
+    
+    // Hitung unique sentences dari data-sentence attributes
+    const allMarked = container.querySelectorAll('[data-sentence]');
+    const sentenceSet = new Set();
+    allMarked.forEach(el => sentenceSet.add(el.getAttribute('data-sentence')));
+    const totalSentences = sentenceSet.size;
+    
+    currentSentenceIndex = -1; // Reset: tampilkan semua
+    
+    const posEl = document.getElementById('sentence-position');
+    const prevBtn = document.getElementById('sentence-prev');
+    const nextBtn = document.getElementById('sentence-next');
+    
+    if (posEl) posEl.textContent = "Semua kalimat";
+    
+    // Add click handler pada setiap sentence-span
+    allMarked.forEach(el => {
+        el.addEventListener('click', () => {
+            const idx = parseInt(el.getAttribute('data-sentence'));
+            if (!isNaN(idx)) navigateToSentence(idx);
+        });
+    });
+    
+    // Button handlers
+    if (prevBtn) {
+        prevBtn.onclick = () => {
+            // Jika sedang di posisi paling awal (0), navigasi prev -> Semua Kalimat (-1)
+            if (currentSentenceIndex >= 0) {
+                navigateToSentence(currentSentenceIndex - 1);
+            }
+        };
+    }
+    
+    if (nextBtn) {
+        nextBtn.onclick = () => {
+            // Jika mencapai posisi maksimum (terakhir), navigasi next -> Semua Kalimat (-1)
+            if (currentSentenceIndex < totalSentences - 1) {
+                const nextIdx = currentSentenceIndex === -1 ? 0 : currentSentenceIndex + 1;
+                navigateToSentence(nextIdx);
+            } else {
+                showAllSentences();
+            }
+        };
+    }
+    
+    updateTrackerButtons();
+}
+
+/**
+ * Navigate ke kalimat tertentu
+ */
+function navigateToSentence(index) {
+    if (index === -1) {
+        showAllSentences();
+        return;
+    }
+    
+    currentSentenceIndex = index;
+    const container = document.getElementById('result-content');
+    if (!container) return;
+    
+    const allMarked = container.querySelectorAll('[data-sentence]');
+    let firstActive = null;
+    
+    allMarked.forEach(el => {
+        const elSentence = parseInt(el.getAttribute('data-sentence'));
+        el.classList.remove('sentence-active', 'sentence-dimmed');
+        
+        if (elSentence === index) {
+            el.classList.add('sentence-active');
+            if (!firstActive) firstActive = el;
+        } else {
+            el.classList.add('sentence-dimmed');
+        }
+    });
+    
+    // Scroll ke kalimat aktif pertama
+    if (firstActive) {
+        firstActive.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+    
+    updateTrackerButtons();
+}
+
+/**
+ * Tampilkan semua kalimat (reset)
+ */
+function showAllSentences() {
+    currentSentenceIndex = -1;
+    const container = document.getElementById('result-content');
+    if (!container) return;
+    
+    const allMarked = container.querySelectorAll('[data-sentence]');
+    allMarked.forEach(el => {
+        el.classList.remove('sentence-active', 'sentence-dimmed');
+    });
+    
+    updateTrackerButtons();
+}
+
+/**
+ * Update state tombol navigasi
+ */
+function updateTrackerButtons() {
+    const container = document.getElementById('result-content');
+    const posEl = document.getElementById('sentence-position');
+    const prevBtn = document.getElementById('sentence-prev');
+    const nextBtn = document.getElementById('sentence-next');
+    
+    if (!posEl || !container) return;
+    
+    // Hitung total sentences
+    const sentenceSet = new Set();
+    container.querySelectorAll('[data-sentence]').forEach(el => {
+        sentenceSet.add(el.getAttribute('data-sentence'));
+    });
+    const totalSentences = sentenceSet.size;
+    
+    if (currentSentenceIndex === -1) {
+        // Mode "semua"
+        posEl.innerHTML = `Semua kalimat <span class="capitalize lowercase ml-1" style="opacity:0.6; font-size:10px">(${totalSentences})</span>`;
+        if (prevBtn) prevBtn.disabled = true;
+        // Next bisa di-klik selama jumlah kalimat lebih dari 1
+        if (nextBtn) nextBtn.disabled = totalSentences <= 1;
+    } else {
+        posEl.textContent = `Kalimat ${currentSentenceIndex + 1} dari ${totalSentences}`;
+        // Prev selalu aktif kapanpun asal index tidak lebih kecil dari 0 (jika 0 maka lari ke Semua)
+        if (prevBtn) prevBtn.disabled = false; 
+        if (nextBtn) nextBtn.disabled = false; // Next selalu aktif, jika di kalimat terakhir lari ke "Semua Kalimat"
+    }
 }
 
 async function showResult(tokenizedResult, data, parapluie, bleu) {

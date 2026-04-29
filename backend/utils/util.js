@@ -219,7 +219,7 @@ async function paraPLUIE(S, H) {
     const response_schema = { "type": "STRING", "enum": ["Yes", "No"] };
     const generationConfig = {
         maxOutputTokens: 1000,
-        temperature: 0,
+        temperature: 0.7,
         responseMimeType: "text/x.enum",
         responseSchema: response_schema,
         responseLogprobs: true,

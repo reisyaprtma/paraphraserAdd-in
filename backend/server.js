@@ -22,6 +22,7 @@ const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 
 
 app.use(cors({
+    // origin: "https://localhost:3000",
     origin: "https://paraphraser-add-in.vercel.app",
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
@@ -242,4 +243,4 @@ app.post('/api/log-error', async (req, res) => {
 app.listen(port, '0.0.0.0', () => {
     console.log(`Backend server running on port ${port}`);
     console.log(`Intelligem API endpoint: http://localhost:${port}/api/intelligem`);
-});
+}); //
