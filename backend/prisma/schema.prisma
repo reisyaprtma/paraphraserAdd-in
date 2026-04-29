@@ -58,5 +58,5 @@ model ParaphraseLog {
   lexical          Int?
   createdAt        DateTime @default(now())
 
-  @@index([semantic, grammatical, syntactic, lexical])
+  @@index([semantic, gramatical, syntactic, lexical])
 }
