@@ -190,20 +190,27 @@ app.post('/api/paraphrase', async (req, res) => {
     }
 });
 
-// Endpoint untuk menyimpan feedback (rating & komentar) ke database
+// Endpoint untuk menyimpan feedback (4 dimensi rating & komentar) ke database
 app.patch('/api/paraphrase/:id/feedback', async (req, res) => {
     try {
         const { id } = req.params;
-        const { rating, userComment } = req.body;
+        const { semantic, gramatical, syntactic, lexical, userComment } = req.body;
 
-        if (!rating || typeof rating !== 'number' || rating < 1 || rating > 5) {
-            return res.status(400).json({ error: 'Rating harus angka 1-5' });
+        // Validasi: semua dimensi wajib diisi dan bernilai 1-5
+        const ratings = { semantic, gramatical, syntactic, lexical };
+        for (const [key, val] of Object.entries(ratings)) {
+            if (!val || typeof val !== 'number' || val < 1 || val > 5) {
+                return res.status(400).json({ error: `Rating '${key}' harus angka 1-5` });
+            }
         }
 
         const updated = await prisma.paraphraseLog.update({
             where: { id },
             data: {
-                rating: rating,
+                semantic:   semantic,
+                gramatical: gramatical,
+                syntactic:  syntactic,
+                lexical:    lexical,
                 userComment: userComment || null,
             }
         });

@@ -47,14 +47,16 @@ model ParaphraseLog {
   paraphrases      Paraphrase[]
 
   // Feedback & Metadata
-  rating           Int?
   userComment      String?  @db.Text
   errorLog         String?  @db.Text
   iterations       Int      @default(1)
   isSuccessful     Boolean  @default(true)
   mode             String?  // formal | academic
-  
+  semantic         Int?  
+  gramatical       Int?
+  syntactic        Int?
+  lexical          Int?
   createdAt        DateTime @default(now())
 
-  @@index([rating])
+  @@index([semantic, grammatical, syntactic, lexical])
 }

@@ -360,7 +360,8 @@ async function sendPrompt(mode) {
     const comment = document.getElementById('feedback-comment');
     comment.value = "";
     comment.disabled = false;
-    currentRating = 0; // Reset rating state
+    // Reset semua dimensi rating
+    currentRating = { semantic: 0, gramatical: 0, syntactic: 0, lexical: 0 };
     starBtns.forEach(btn => {
         btn.disabled = false;
         btn.classList.remove('opacity-50');
@@ -376,7 +377,6 @@ async function sendPrompt(mode) {
     submitBtn.disabled = false;
     submitBtn.classList.remove('opacity-50');
     submitBtn.innerText = "Kirim Penilaian";
-    // submitBtn.classList.add('bg-gray-100', 'hover:bg-gray-200');
     submitBtn.classList.remove('bg-green-100', 'text-green-700', 'dark:bg-green-900', 'dark:text-green-300');
 
     const extractedToken = await extractCombinedTokens()
@@ -1429,52 +1429,61 @@ function updateHealthCheckUI(parapluie, bleu) {
     }
 }
 
-// Global state untuk rating
-let currentRating = 0;
+// Global state untuk 4 dimensi rating
+let currentRating = {
+    semantic: 0,
+    gramatical: 0,
+    syntactic: 0,
+    lexical: 0,
+};
+
+// Konfigurasi 4 grup star rating sesuai HTML (id="star-rating-*")
+const RATING_GROUPS = [
+    { key: 'semantic',   containerId: 'star-rating-semantic'   },
+    { key: 'gramatical', containerId: 'star-rating-gramatical' },
+    { key: 'syntactic',  containerId: 'star-rating-syntactic'  },
+    { key: 'lexical',    containerId: 'star-rating-lexical'    },
+];
 
 function setupFeedbackInteraction() {
-    const starBtns = document.querySelectorAll('.star-btn');
     const submitBtn = document.getElementById('submit-feedback-btn');
-    // starBtns.forEach(btn => {
-    //     btn.disabled = false;
-    //     btn.classList.remove('opacity-50');
-    // })
-    // submitBtn.disabled = false;
-    // submitBtn.classList.remove('opacity-50');
 
-    starBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            currentRating = parseInt(e.currentTarget.getAttribute('data-value'));
+    // Setup setiap grup bintang secara independen
+    RATING_GROUPS.forEach(({ key, containerId }) => {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        const btns = container.querySelectorAll('.star-btn');
 
-            // Warnai SVG di dalam button
-            starBtns.forEach(b => {
-                const val = parseInt(b.getAttribute('data-value'));
-                const icon = b.querySelector('svg'); // Target SVG hasil render Lucide
+        btns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const selected = parseInt(e.currentTarget.getAttribute('data-value'));
+                currentRating[key] = selected;
 
-                if (icon) {
-                    if (val <= currentRating) {
-                        icon.classList.remove('text-gray-300');
-                        icon.classList.add('text-yellow-400', 'fill-yellow-400');
-                    } else {
-                        icon.classList.add('text-gray-300');
-                        icon.classList.remove('text-yellow-400', 'fill-yellow-400');
+                // Warnai bintang di grup ini saja
+                btns.forEach(b => {
+                    const val = parseInt(b.getAttribute('data-value'));
+                    const icon = b.querySelector('svg');
+                    if (icon) {
+                        if (val <= selected) {
+                            icon.classList.remove('text-gray-300');
+                            icon.classList.add('text-yellow-400', 'fill-yellow-400');
+                        } else {
+                            icon.classList.add('text-gray-300');
+                            icon.classList.remove('text-yellow-400', 'fill-yellow-400');
+                        }
                     }
-                }
+                });
             });
         });
     });
 
     // Interaksi klik Kirim
     if (submitBtn) {
-
         submitBtn.onclick = async () => {
-            submitBtn.innerText = "Mengirim Penilaian...";
-            submitBtn.disabled = true;
-            submitBtn.classList.add('opacity-50');
-            const comment = document.getElementById('feedback-comment').value;
-            if (currentRating === 0) {
-                // Bisa pakai alert atau showNotification buatanmu
-                showNotification("Silakan berikan rating bintang terlebih dahulu.");
+            // Validasi: semua 4 dimensi harus diisi
+            const missing = RATING_GROUPS.filter(({ key }) => currentRating[key] === 0);
+            if (missing.length > 0) {
+                showNotification("Silakan berikan semua penilaian bintang terlebih dahulu.");
                 return;
             }
 
@@ -1483,8 +1492,14 @@ function setupFeedbackInteraction() {
                 return;
             }
 
+            submitBtn.innerText = "Mengirim Penilaian...";
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-50');
+
+            const comment = document.getElementById('feedback-comment').value;
+
             console.log("Mengirim feedback ke database...");
-            console.log({ rating: currentRating, comment: comment, logId: currentLogId });
+            console.log({ ...currentRating, comment, logId: currentLogId });
 
             try {
                 const FEEDBACK_URL = `${BACKEND_URL}/${currentLogId}/feedback`;
@@ -1492,7 +1507,10 @@ function setupFeedbackInteraction() {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        rating: currentRating,
+                        semantic:   currentRating.semantic,
+                        gramatical: currentRating.gramatical,
+                        syntactic:  currentRating.syntactic,
+                        lexical:    currentRating.lexical,
                         userComment: comment || null,
                     })
                 });
@@ -1506,22 +1524,31 @@ function setupFeedbackInteraction() {
 
                 // Ubah UI tombol setelah terkirim
                 submitBtn.innerText = "\u2713 Penilaian Terkirim";
-                submitBtn.classList.remove('bg-gray-100', 'hover:bg-gray-200');
                 submitBtn.classList.add('bg-green-100', 'text-green-700', 'dark:bg-green-900', 'dark:text-green-300');
                 submitBtn.disabled = true;
-                starBtns.forEach(btn => {
-                    btn.disabled = true;
-                    btn.classList.add('opacity-50');
+
+                // Disable semua bintang di semua grup
+                RATING_GROUPS.forEach(({ containerId }) => {
+                    const container = document.getElementById(containerId);
+                    if (!container) return;
+                    container.querySelectorAll('.star-btn').forEach(btn => {
+                        btn.disabled = true;
+                        btn.classList.add('opacity-50');
+                    });
                 });
+
                 document.getElementById('feedback-comment').disabled = true;
                 showNotification("Penilaian berhasil disimpan!");
             } catch (err) {
                 console.error("Gagal mengirim feedback:", err);
+                submitBtn.innerText = "Kirim Penilaian";
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-50');
                 showNotification("Gagal mengirim penilaian: " + err.message);
             }
 
             // Reset state
-            currentRating = 0;
+            currentRating = { semantic: 0, gramatical: 0, syntactic: 0, lexical: 0 };
         };
     }
 }
