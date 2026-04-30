@@ -76,13 +76,13 @@ async function updateSelectionInBox() {
             console.log(count); // Output: 6
 
 
-            if (text.length > 2500) {
+            if (count > 750) {
                 btn.disabled = true;
                 btn.classList.add("opacity-50");
                 // btn2.disabled = true;
                 // btn2.classList.add("opacity-50");
             }
-            else if (text.length === 0) {
+            else if (count === 0) {
                 btn.disabled = true;
                 btn.classList.add("opacity-50");
                 // btn2.disabled = true;
@@ -96,13 +96,13 @@ async function updateSelectionInBox() {
             }
             box.value = text;
             if (statusEl) {
-                if (text.length > 2500) {
-                    statusEl.innerHTML = `<i data-lucide="alert-triangle" class="text-red-500 w-3 h-3"></i> Teks melebihi batas panjang (${text.length} karakter)`;
+                if (count > 750) {
+                    statusEl.innerHTML = `<i data-lucide="alert-triangle" class="text-red-500 w-3 h-3"></i> Teks melebihi batas maksimal! Terseleksi (${count} Kata)`;
                     // statusEl.classList.add('active');
                     statusEl.classList.remove('active');
                     statusEl.classList.add('bg-red-100');
                     statusEl.classList.add('text-red-500');
-                } else if (text.length > 0) {
+                } else if (count > 0) {
                     statusEl.innerHTML = `<i data-lucide="check" class="w-3 h-3"></i> ${count} kata terseleksi`;
                     statusEl.classList.add('active');
                 } else {
