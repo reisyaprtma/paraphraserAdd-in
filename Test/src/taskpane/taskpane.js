@@ -231,17 +231,28 @@ async function extractCombinedTokens() {
         });
 
         // 4️⃣ PASS 3: CLEANING XML TO TEXT
-        let textBase = currentXml
-            .replace(/<\/w:p>/gi, "\n")
-            .replace(/<w:br\/>/gi, "\n")
-            .replace(/<w:tab\/>/gi, "\t")
-            .replace(/<[^>]+>/g, "")
-            .replace(/&lt;/g, "<")
-            .replace(/&gt;/g, ">")
-            .replace(/&amp;/g, "&")
-            .replace(/&quot;/g, '"')
-            .replace(/&apos;/g, "'")
-            .replace(/[ \t]+/g, " ").trim();
+        // Jika tidak ada sitasi DAN tidak ada math yang terdeteksi,
+        // gunakan teks plain dari selection.text secara langsung.
+        // Ini mencegah kebocoran teks mentah dari field citation manager lain
+        // (misal: EndNote, RefWorks) yang tidak dikenali dan tidak tertangkap PASS 1.
+        // Jika ada math → tetap wajib proses dari XML agar posisi [[MATH_n]] benar.
+        let textBase;
+        if (citationIndex === 0 && mathIndex === 0) {
+            console.log("⚡ Tidak ada sitasi maupun math → menggunakan plain text langsung (bypass XML cleaning)");
+            textBase = seleksi_teks;
+        } else {
+            textBase = currentXml
+                .replace(/<\/w:p>/gi, "\n")
+                .replace(/<w:br\/>/gi, "\n")
+                .replace(/<w:tab\/>/gi, "\t")
+                .replace(/<[^>]+>/g, "")
+                .replace(/&lt;/g, "<")
+                .replace(/&gt;/g, ">")
+                .replace(/&amp;/g, "&")
+                .replace(/&quot;/g, '"')
+                .replace(/&apos;/g, "'")
+                .replace(/[ \t]+/g, " ").trim();
+        }
 
         // 5️⃣ PASS 4: MENDELEY BARU TOKENIZATION (Content Controls)
         const citationRequests = contentControls.items.map((cc) => {
