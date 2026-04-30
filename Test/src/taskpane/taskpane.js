@@ -178,16 +178,23 @@ async function extractCombinedTokens() {
 
         let citationIndex = 0;
 
-        // 2️⃣ PASS 1: MENDELEY LAMA TOKENIZATION (Menggunakan RegEx)
+        // 2️⃣ PASS 1: MENDELEY LAMA & ZOTERO TOKENIZATION (Menggunakan RegEx)
         // RegEx diperlebar untuk memakan seluruh blok Field dari "begin" sampai "end"
-        const cslRegex = /<w:fldChar[^>]*w:fldCharType="begin"[^>]*>[\s\S]*?ADDIN CSL_CITATION[\s\S]*?<w:fldChar[^>]*w:fldCharType="end"[^>]*>/gi;
+        // Mendeley lama : ADDIN CSL_CITATION
+        // Zotero        : ADDIN ZOTERO_ITEM CSL_CITATION
+        const cslRegex = /<w:fldChar[^>]*w:fldCharType="begin"[^>]*>[\s\S]*?ADDIN (?:ZOTERO_ITEM )?CSL_CITATION[\s\S]*?<w:fldChar[^>]*w:fldCharType="end"[^>]*>/gi;
         
         currentXml = currentXml.replace(cslRegex, (match) => {
             const token = `[[CIT_${citationIndex + 1}]]`;
             
             let extractedRawText = "[Referensi]";
             try {
-                const rawTextMatch = match.match(/"plainTextFormattedCitation":"(.*?)"/) || match.match(/"formattedCitation":"(.*?)"/);
+                // Zotero menggunakan "plainCitation" dan "formattedCitation"
+                // Mendeley menggunakan "plainTextFormattedCitation" dan "formattedCitation"
+                const rawTextMatch = 
+                    match.match(/"plainTextFormattedCitation":"(.*?)"/) ||
+                    match.match(/"plainCitation":"(.*?)"/) ||
+                    match.match(/"formattedCitation":"(.*?)"/);
                 if (rawTextMatch && rawTextMatch[1]) {
                     extractedRawText = rawTextMatch[1];
                 }
