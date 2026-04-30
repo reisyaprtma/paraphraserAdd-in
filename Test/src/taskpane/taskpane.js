@@ -97,7 +97,7 @@ async function updateSelectionInBox() {
             box.value = text;
             if (statusEl) {
                 if (count > 750) {
-                    statusEl.innerHTML = `<i data-lucide="alert-triangle" class="text-red-500 w-3 h-3"></i> Teks melebihi batas maksimal! Terseleksi (${count} Kata)`;
+                    statusEl.innerHTML = `<i data-lucide="alert-triangle" class="text-red-500 w-3 h-3"></i> Jumlah kata melebihi batas maksimal! (Terseleksi ${count} kata)`;
                     // statusEl.classList.add('active');
                     statusEl.classList.remove('active');
                     statusEl.classList.add('bg-red-100');
