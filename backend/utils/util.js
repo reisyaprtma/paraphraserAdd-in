@@ -7,7 +7,7 @@ import prisma from './prisma.js';
 
 // --- THE VERCEL FIX ---
 // If we are in Vercel (production) and have the JSON string in an environment variable
-if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+if (process.env.GOOGLE_APPLICATION_CREDENTIALS && process.env.GOOGLE_APPLICATION_CREDENTIALS.trim().startsWith('{')) {
     // 1. Define a temporary file path
     const tempKeyPath = path.join('/tmp', 'google-credentials.json');
     

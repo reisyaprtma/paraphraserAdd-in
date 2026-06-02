@@ -179,7 +179,7 @@ app.post('/api/paraphrase', async (req, res) => {
             await prisma.paraphraseLog.create({
                 data: {
                     isSuccessful: false,
-                    mode: mode,
+                    mode: req.body?.mode || null,
                     errorLog: e.message || String(e),
                 }
             });

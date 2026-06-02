@@ -1,5 +1,6 @@
 node_modules
 # Keep environment variables out of version control
 .env
+skripsi-frasatwist-038f86d5d142.json
 
 /generated/prisma

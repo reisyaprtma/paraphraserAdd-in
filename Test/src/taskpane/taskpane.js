@@ -552,6 +552,7 @@ function escapeXml(unsafe) {
 // ── Sentence Tracker State ──
 let sentenceSpans = [];
 let currentSentenceIndex = -1; // -1 = show all
+const activeSentenceIndices = {};
 
 function renderStackedDiff(original, paraphrased) {
     const diffs = Diff.diffWords(original, paraphrased);
@@ -701,8 +702,8 @@ function findSentenceBoundaries(text) {
  * Jika suatu span memuat boundary kalimat, split span tersebut
  * menjadi 2+ span via DOM cloneNode (HTML selalu valid).
  */
-function setupSentenceTracking(paraphrasedText) {
-    const container = document.getElementById('result-content');
+function setupSentenceTracking(paraphrasedText, contentId = 'result-content', positionId = 'sentence-position', prevBtnId = 'sentence-prev', nextBtnId = 'sentence-next') {
+    const container = document.getElementById(contentId);
     if (!container) return;
     
     // Hitung sentence boundaries dari teks parafrase
@@ -713,7 +714,7 @@ function setupSentenceTracking(paraphrasedText) {
     const children = Array.from(container.children);
     
     if (children.length === 0) {
-        initSentenceTracker();
+        initSentenceTracker(contentId, positionId, prevBtnId, nextBtnId);
         return;
     }
     
@@ -723,7 +724,7 @@ function setupSentenceTracking(paraphrasedText) {
             child.setAttribute('data-sentence', '0');
             child.classList.add('sentence-span');
         });
-        initSentenceTracker();
+        initSentenceTracker(contentId, positionId, prevBtnId, nextBtnId);
         return;
     }
     
@@ -805,15 +806,15 @@ function setupSentenceTracking(paraphrasedText) {
         }
     });
     
-    initSentenceTracker();
+    initSentenceTracker(contentId, positionId, prevBtnId, nextBtnId);
 }
 
 /**
  * Inisialisasi sentence tracker UI
  * Menggunakan data-sentence attribute, bukan .sentence-span wrapping
  */
-function initSentenceTracker() {
-    const container = document.getElementById('result-content');
+function initSentenceTracker(contentId = 'result-content', positionId = 'sentence-position', prevBtnId = 'sentence-prev', nextBtnId = 'sentence-next') {
+    const container = document.getElementById(contentId);
     if (!container) return;
     
     // Hitung unique sentences dari data-sentence attributes
@@ -822,11 +823,11 @@ function initSentenceTracker() {
     allMarked.forEach(el => sentenceSet.add(el.getAttribute('data-sentence')));
     const totalSentences = sentenceSet.size;
     
-    currentSentenceIndex = -1; // Reset: tampilkan semua
+    activeSentenceIndices[contentId] = -1; // Reset: tampilkan semua
     
-    const posEl = document.getElementById('sentence-position');
-    const prevBtn = document.getElementById('sentence-prev');
-    const nextBtn = document.getElementById('sentence-next');
+    const posEl = document.getElementById(positionId);
+    const prevBtn = document.getElementById(prevBtnId);
+    const nextBtn = document.getElementById(nextBtnId);
     
     if (posEl) posEl.textContent = "Semua kalimat";
     
@@ -834,46 +835,48 @@ function initSentenceTracker() {
     allMarked.forEach(el => {
         el.addEventListener('click', () => {
             const idx = parseInt(el.getAttribute('data-sentence'));
-            if (!isNaN(idx)) navigateToSentence(idx);
+            if (!isNaN(idx)) navigateToSentence(idx, contentId, positionId, prevBtnId, nextBtnId);
         });
     });
     
     // Button handlers
     if (prevBtn) {
         prevBtn.onclick = () => {
+            const currentIndex = activeSentenceIndices[contentId] ?? -1;
             // Jika sedang di posisi paling awal (0), navigasi prev -> Semua Kalimat (-1)
-            if (currentSentenceIndex >= 0) {
-                navigateToSentence(currentSentenceIndex - 1);
+            if (currentIndex >= 0) {
+                navigateToSentence(currentIndex - 1, contentId, positionId, prevBtnId, nextBtnId);
             }
         };
     }
     
     if (nextBtn) {
         nextBtn.onclick = () => {
+            const currentIndex = activeSentenceIndices[contentId] ?? -1;
             // Jika mencapai posisi maksimum (terakhir), navigasi next -> Semua Kalimat (-1)
-            if (currentSentenceIndex < totalSentences - 1) {
-                const nextIdx = currentSentenceIndex === -1 ? 0 : currentSentenceIndex + 1;
-                navigateToSentence(nextIdx);
+            if (currentIndex < totalSentences - 1) {
+                const nextIdx = currentIndex === -1 ? 0 : currentIndex + 1;
+                navigateToSentence(nextIdx, contentId, positionId, prevBtnId, nextBtnId);
             } else {
-                showAllSentences();
+                showAllSentences(contentId, positionId, prevBtnId, nextBtnId);
             }
         };
     }
     
-    updateTrackerButtons();
+    updateTrackerButtons(contentId, positionId, prevBtnId, nextBtnId);
 }
 
 /**
  * Navigate ke kalimat tertentu
  */
-function navigateToSentence(index) {
+function navigateToSentence(index, contentId = 'result-content', positionId = 'sentence-position', prevBtnId = 'sentence-prev', nextBtnId = 'sentence-next') {
     if (index === -1) {
-        showAllSentences();
+        showAllSentences(contentId, positionId, prevBtnId, nextBtnId);
         return;
     }
     
-    currentSentenceIndex = index;
-    const container = document.getElementById('result-content');
+    activeSentenceIndices[contentId] = index;
+    const container = document.getElementById(contentId);
     if (!container) return;
     
     const allMarked = container.querySelectorAll('[data-sentence]');
@@ -896,15 +899,15 @@ function navigateToSentence(index) {
         firstActive.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
     
-    updateTrackerButtons();
+    updateTrackerButtons(contentId, positionId, prevBtnId, nextBtnId);
 }
 
 /**
  * Tampilkan semua kalimat (reset)
  */
-function showAllSentences() {
-    currentSentenceIndex = -1;
-    const container = document.getElementById('result-content');
+function showAllSentences(contentId = 'result-content', positionId = 'sentence-position', prevBtnId = 'sentence-prev', nextBtnId = 'sentence-next') {
+    activeSentenceIndices[contentId] = -1;
+    const container = document.getElementById(contentId);
     if (!container) return;
     
     const allMarked = container.querySelectorAll('[data-sentence]');
@@ -912,17 +915,17 @@ function showAllSentences() {
         el.classList.remove('sentence-active', 'sentence-dimmed');
     });
     
-    updateTrackerButtons();
+    updateTrackerButtons(contentId, positionId, prevBtnId, nextBtnId);
 }
 
 /**
  * Update state tombol navigasi
  */
-function updateTrackerButtons() {
-    const container = document.getElementById('result-content');
-    const posEl = document.getElementById('sentence-position');
-    const prevBtn = document.getElementById('sentence-prev');
-    const nextBtn = document.getElementById('sentence-next');
+function updateTrackerButtons(contentId = 'result-content', positionId = 'sentence-position', prevBtnId = 'sentence-prev', nextBtnId = 'sentence-next') {
+    const container = document.getElementById(contentId);
+    const posEl = document.getElementById(positionId);
+    const prevBtn = document.getElementById(prevBtnId);
+    const nextBtn = document.getElementById(nextBtnId);
     
     if (!posEl || !container) return;
     
@@ -933,14 +936,16 @@ function updateTrackerButtons() {
     });
     const totalSentences = sentenceSet.size;
     
-    if (currentSentenceIndex === -1) {
+    const currentIndex = activeSentenceIndices[contentId] ?? -1;
+    
+    if (currentIndex === -1) {
         // Mode "semua"
         posEl.innerHTML = `Semua kalimat <span class="capitalize lowercase ml-1" style="opacity:0.6; font-size:10px">(${totalSentences})</span>`;
         if (prevBtn) prevBtn.disabled = true;
         // Next bisa di-klik selama jumlah kalimat lebih dari 1
         if (nextBtn) nextBtn.disabled = totalSentences <= 1;
     } else {
-        posEl.textContent = `Kalimat ${currentSentenceIndex + 1} dari ${totalSentences}`;
+        posEl.textContent = `Kalimat ${currentIndex + 1} dari ${totalSentences}`;
         // Prev selalu aktif kapanpun asal index tidak lebih kecil dari 0 (jika 0 maka lari ke Semua)
         if (prevBtn) prevBtn.disabled = false; 
         if (nextBtn) nextBtn.disabled = false; // Next selalu aktif, jika di kalimat terakhir lari ke "Semua Kalimat"
@@ -988,7 +993,7 @@ function showFailedResult(tokenizedResultArray, dataArray, parapluieArray, bleuA
 
     // 1. Reset & Show UI
     loadingState.classList.add("hidden");
-    failedresultSection.classList.remove("!hidden");
+    failedresultSection.classList.remove("!hidden", "hidden");
     btn.disabled = false;
     btn.classList.remove("opacity-50");
     // btn2.disabled = false;
@@ -1035,10 +1040,10 @@ function failedRenderStackedDiff(original, paraphrasedArray, pScores, bScores, o
 
         const flushBuffer = () => {
             if (bufferRem.trim().length > 0) {
-                unifiedHtml += `<span class="removal-highlight hidden" style="background-color:rgba(255, 8, 8, 0.05); color:rgb(96, 94, 94); text-decoration: line-through; text-decoration-color:red">${bufferRem}</span>`;
+                unifiedHtml += `<span class="removal-highlight hidden bg-red-500/5 text-gray-800 dark:text-gray-200 line-through decoration-red-500">${bufferRem}</span>`;
             }
             if (bufferAdd.trim().length > 0) {
-                unifiedHtml += `<span class="addition-highlight" style="background-color: #ccffcc; color: #006600;">${bufferAdd}</span>`;
+                unifiedHtml += `<span class="addition-highlight bg-green-200 dark:bg-green-800 text-green-800 dark:text-green-200">${bufferAdd}</span>`;
             }
             bufferRem = "";
             bufferAdd = "";
@@ -1068,76 +1073,73 @@ function failedRenderStackedDiff(original, paraphrasedArray, pScores, bScores, o
 
         flushBuffer();
 
+        // Hitung jumlah kata
+        const segmenter = new Intl.Segmenter('id', { granularity: 'word' });
+        const segments = segmenter.segment(paraphrasedText);
+        let wordCount = 0;
+        for (const segment of segments) {
+            if (segment.isWordLike) wordCount++;
+        }
+
         const card = document.createElement("div");
-        card.className = "card animate-slide-up";
-
-        // LOGIKA HEALTH CHECK
-        const pScore = pScores[index] || 0;
-        const bScore = bScores[index] || 0;
-        const similarityPercent = Math.round(bScore * 100);
-
-        // Makna: < 0 berarti bergeser (Merah), >= 0 berarti aman (Hijau)
-        const maknaStatus = pScore >= 0
-            ? `<span class="text-green-600 dark:text-green-400 font-bold flex items-center gap-1"><i data-lucide="check-circle" class="w-4 h-4"></i> Makna Aman</span>`
-            : `<span class="text-red-600 dark:text-red-400 font-bold flex items-center gap-1"><i data-lucide="alert-circle" class="w-4 h-4"></i> Makna Tidak Aman</span>`;
-
-        // Variasi Kata (BLEU): Asumsi > 40% terlalu mirip (Merah), <= 40% aman (Hijau)
-        // Lu bisa atur angka 40 ini sesuai threshold dosen lu nanti.
-        const isMirip = similarityPercent > 40;
-        const bleuStatus = isMirip
-            ? `<div class="flex justify-between text-xs mb-1">
-                   <span class="font-medium text-gray-700 dark:text-gray-300">Variasi Kata <span class="text-red-500 font-bold">(Kemiripan Tinggi)</span></span>
-                   <span class="font-bold text-red-500">${similarityPercent}% Mirip</span>
-               </div>
-               <div class="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-1.5">
-                   <div class="bg-red-500 h-1.5 rounded-full" style="width: ${similarityPercent}%"></div>
-               </div>`
-            : `<div class="flex justify-between text-xs mb-1">
-                   <span class="font-medium text-gray-700 dark:text-gray-300">Variasi Kata <span class="text-green-500">(Keragaman Baik)</span></span>
-                   <span class="font-bold text-green-500">${similarityPercent}% Mirip</span>
-               </div>
-               <div class="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-1.5">
-                   <div class="bg-green-500 h-1.5 rounded-full" style="width: ${similarityPercent}%"></div>
-               </div>`;
+        card.className = "card animate-slide-up mb-4";
 
         card.innerHTML = `
-            <div class="card-header">
-                <span class="opsi-badge">Opsi ${index + 1}</span>
-            </div>
-            
-            <div class="card-body" style="border-bottom:1px solid var(--clr-border)">
-                <div style="font-size:11px;margin-bottom:6px">${maknaStatus}</div>
-                <div>${bleuStatus}</div>
+            <!-- Card Header -->
+            <div class="card-header flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <span class="opsi-badge">Opsi ${index + 1}</span>
+                    <span class="section-label" style="margin-bottom:0">Tampilkan Teks Dibuang</span>
+                </div>
+                <button id="diff-toggle-failed-${index}" class="diff-toggle-btn">
+                    <div id="toggle-circle-failed-${index}" class="diff-toggle-thumb"></div>
+                </button>
             </div>
 
+            <!-- Diff Content -->
             <div class="card-body">
-                <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-                    <span class="section-label" style="margin-bottom:0">Diff View</span>
-                    <button id="diff-toggle-failed-${index}" class="diff-toggle-btn">
-                        <div id="toggle-circle-failed-${index}" class="diff-toggle-thumb"></div>
-                    </button>
-                </div>
-                <div id="result-content">
+                <div id="result-content-failed-${index}">
                     ${unifiedHtml}
                 </div>
             </div>
-            
+
+            <!-- Sentence Tracker Minimalis -->
+            <div id="sentence-tracker-failed-${index}" class="flex items-center justify-between px-4 py-2 border-b" style="border-color: var(--clr-border); background: rgba(0,0,0,0.015);">
+                <button id="sentence-prev-failed-${index}" class="btn-icon" style="width:24px;height:24px" title="Kalimat Sebelumnya" disabled>
+                    <i data-lucide="chevron-left" class="w-3.5 h-3.5"></i>
+                </button>
+                <span id="sentence-position-failed-${index}" class="text-[11px] font-semibold tracking-wide text-gray-500 uppercase">Semua kalimat</span>
+                <button id="sentence-next-failed-${index}" class="btn-icon" style="width:24px;height:24px" title="Kalimat Berikutnya" disabled>
+                    <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                </button>
+            </div>
+
+            <!-- Card Footer: counts + action buttons -->
             <div class="card-footer">
                 <div class="diff-count">
-                    <span class="removed">− <span id="removal-count-failed-${index}">${remCount}</span></span>
-                    <span class="added">+ <span id="addition-count-failed-${index}">${addCount}</span></span>
+                    <span class="section-label">Jumlah Kata: <span id="addition-count-failed-${index}">${wordCount} Kata</span></span>
                 </div>
-                
-                <div style="display:flex;gap:8px">
+                <div class="flex gap-2">
                     <button id="copy-btn-failed-${index}" class="btn-icon" title="Salin Teks">
                         <i data-lucide="copy" class="w-3.5 h-3.5"></i>
                     </button>
-                    <button id="insert-btn-failed-${index}" class="btn-icon filled" title="Sisipkan">
+                    <button id="insert-btn-failed-${index}" class="btn-icon filled" title="Sisipkan ke Dokumen">
                         <i data-lucide="download" class="w-3.5 h-3.5"></i>
                     </button>
                 </div>
             </div>
         `;
+
+        container.appendChild(card);
+
+        // Setup Sentence Tracking secara independen untuk kartu ini
+        setupSentenceTracking(
+            paraphrasedText,
+            `result-content-failed-${index}`,
+            `sentence-position-failed-${index}`,
+            `sentence-prev-failed-${index}`,
+            `sentence-next-failed-${index}`
+        );
 
         // Toggle untuk masing-masing kartu (hanya mempengaruhi removal-highlight di kartu ini)
         const diffToggle = card.querySelector(`#diff-toggle-failed-${index}`);
@@ -1157,18 +1159,23 @@ function failedRenderStackedDiff(original, paraphrasedArray, pScores, bScores, o
 
         // Tombol sisipkan khusus untuk opsi ini
         const insertBtn = card.querySelector(`#insert-btn-failed-${index}`);
-        if (insertBtn && ooxmlData && ooxmlData[index]) {
+        if (insertBtn) {
             insertBtn.addEventListener("click", function () {
-                insertxml(ooxmlData[index]);
+                if (objects.math.length === 0 && objects.citations.length === 0) {
+                    insert(paraphrasedText);
+                } else if (ooxmlData && ooxmlData[index]) {
+                    insertxml(ooxmlData[index]);
+                }
                 showNotification("Teks opsi " + (index + 1) + " berhasil disisipkan.");
             });
         }
+
         // Tombol copy khusus untuk opsi ini
         const copyBtn = card.querySelector(`#copy-btn-failed-${index}`);
         if (copyBtn) {
             copyBtn.addEventListener("click", async function () {
                 try {
-                    await navigator.clipboard.writeText(paraphrasedArray[index]);
+                    await navigator.clipboard.writeText(paraphrasedText);
                     showNotification("Teks opsi " + (index + 1) + " berhasil disalin.");
                     console.log("Teks opsi " + (index + 1) + " disalin.");
                 } catch (err) {
@@ -1176,9 +1183,10 @@ function failedRenderStackedDiff(original, paraphrasedArray, pScores, bScores, o
                 }
             });
         }
-
-        container.appendChild(card);
     });
+
+    // Re-render Lucide icons
+    if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 
 
@@ -1380,7 +1388,7 @@ function setupEventListeners() {
         sendPrompt(mode);
     };
     // document.getElementById("paraphrase-fast-btn").onclick = () => sendPrompt('fast');
-    // document.getElementById("test-btn").onclick = fetchFailedTest;
+    document.getElementById("test-btn").onclick = fetchFailedTest;
     // 3. Insert Action [cite: 470]
     document.getElementById("insert-btn").onclick = () => {
         // Logika insertText nanti disini

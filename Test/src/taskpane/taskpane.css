@@ -873,7 +873,7 @@ textarea::-webkit-scrollbar-thumb {
     gap: 4px;
     padding: 3px 10px;
     border-radius: var(--radius-pill);
-    font-size: 9px;
+    font-size: 7px;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
