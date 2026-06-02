@@ -11,7 +11,7 @@
 
 // ----------------------------------------- GLOBAL VARIABEL --------------------------
 // const BACKEND_URL = "http://localhost:8000/api/paraphrase";
-const BACKEND_URL = "https://paraphraseradd-in-779882211224.asia-southeast3.run.app/api/paraphrase";
+const BACKEND_URL = "https://paraphraseradd-in-531010905615.asia-southeast1.run.app/api/paraphrase";
 
 // let resultPara = ""
 import { htmlToText } from 'html-to-text';
