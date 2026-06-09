@@ -726,7 +726,7 @@ textarea::-webkit-scrollbar-thumb {
 /* ── Result Content ──────────────────────────────────────── */
 #result-content {
     font-family: 'Inter', 'Segoe UI', sans-serif;
-    font-size: 13px;
+    font-size: 12px;
     line-height: 1.75;
     color: var(--clr-muted);
     word-break: break-word;
@@ -745,11 +745,13 @@ textarea::-webkit-scrollbar-thumb {
     text-decoration-thickness: 1.5px;
     border-radius: 3px;
     padding: 1px 2px;
+    font-size: 12px;
 }
 
 .dark .removal-highlight {
     background-color: rgba(220, 38, 38, 0.12);
     color: #fca5a5;
+    font-size: 12px;
 }
 
 .addition-highlight {
@@ -758,11 +760,13 @@ textarea::-webkit-scrollbar-thumb {
     border-radius: 3px;
     padding: 1px 3px;
     font-weight: 500;
+    font-size: 12px;
 }
 
 .dark .addition-highlight {
     background-color: rgba(74, 222, 128, 0.12);
-    color: #86efac;
+    color: #86efac; 
+    font-size: 12px;
 }
 
 /* ── Star Rating ─────────────────────────────────────────── */
@@ -849,6 +853,7 @@ textarea::-webkit-scrollbar-thumb {
     display: flex;
     flex-direction: column;
     gap: 12px;
+    font-size: 12px;
 }
 
 /* ── Health Score Bar ────────────────────────────────────── */
@@ -884,6 +889,135 @@ textarea::-webkit-scrollbar-thumb {
 .dark .opsi-badge {
     background: rgba(196, 192, 255, 0.15);
     color: var(--clr-lavender);
+}
+
+/* ── Metric Evaluation Section (Failed Results) ─────────── */
+.metric-eval-section {
+    padding: 10px 14px 8px;
+    border-bottom: 1px solid var(--clr-border);
+    background: rgba(0, 0, 0, 0.015);
+}
+
+.dark .metric-eval-section {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.metric-eval-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.metric-eval-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.metric-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    transition: all var(--transition);
+}
+
+.metric-row-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+}
+
+.metric-icon {
+    flex-shrink: 0;
+}
+
+.metric-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+    flex: 1;
+}
+
+.metric-desc {
+    font-size: 10px;
+    font-weight: 500;
+    line-height: 1.3;
+}
+
+/* Bar Visualization */
+.metric-bar-track {
+    width: 100%;
+    height: 6px;
+    background: var(--clr-border);
+    border-radius: var(--radius-pill);
+    overflow: hidden;
+}
+
+.metric-bar-fill {
+    height: 100%;
+    border-radius: var(--radius-pill);
+    transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Success State */
+.metric-row.metric-success {
+    background: rgba(22, 163, 74, 0.06);
+    border-color: rgba(22, 163, 74, 0.15);
+}
+
+.metric-row.metric-success .metric-icon {
+    color: #16a34a;
+}
+
+.metric-row.metric-success .metric-desc {
+    color: #15803d;
+}
+
+.dark .metric-row.metric-success {
+    background: rgba(74, 222, 128, 0.08);
+    border-color: rgba(74, 222, 128, 0.15);
+}
+
+.dark .metric-row.metric-success .metric-icon {
+    color: #4ade80;
+}
+
+.dark .metric-row.metric-success .metric-desc {
+    color: #86efac;
+}
+
+/* Warning State */
+.metric-row.metric-warning {
+    background: rgba(245, 158, 11, 0.06);
+    border-color: rgba(245, 158, 11, 0.18);
+}
+
+.metric-row.metric-warning .metric-icon {
+    color: #d97706;
+}
+
+.metric-row.metric-warning .metric-desc {
+    color: #b45309;
+}
+
+.dark .metric-row.metric-warning {
+    background: rgba(251, 191, 36, 0.08);
+    border-color: rgba(251, 191, 36, 0.15);
+}
+
+.dark .metric-row.metric-warning .metric-icon {
+    color: #fbbf24;
+}
+
+.dark .metric-row.metric-warning .metric-desc {
+    color: #fde68a;
 }
 
 /* ── Diff Box (legacy, kept for compat) ──────────────────── */

@@ -1084,6 +1084,35 @@ function failedRenderStackedDiff(original, paraphrasedArray, pScores, bScores, o
         const card = document.createElement("div");
         card.className = "card animate-slide-up mb-4";
 
+        // --- Classify pScore and bScore ---
+        const pVal = pScores && pScores[index] !== undefined ? pScores[index] : null;
+        const bVal = bScores && bScores[index] !== undefined ? bScores[index] : null;
+
+        const pIsGood = pVal !== null && pVal > 0;
+        const bIsGood = bVal !== null && bVal < 0.7;
+
+        // pScore: only show warning if meaning shifted
+        const pWarningHtml = !pIsGood
+            ? `<div class="metric-row metric-warning">
+                    <div class="metric-row-left">
+                        <i data-lucide="alert-triangle" class="w-3.5 h-3.5 metric-icon"></i>
+                        <span class="metric-desc">Terjadi pergeseran makna</span>
+                    </div>
+               </div>`
+            : `<div class="metric-row metric-success">
+                    <div class="metric-row-left">
+                        <i data-lucide="check-circle" class="w-3.5 h-3.5 metric-icon"></i>
+                        <span class="metric-desc">Kualitas makna tidak bergeser</span>
+                    </div>
+               </div>`;
+
+        // bScore: bar visualization
+        const bBarPercent = bVal !== null ? Math.min(Math.round(bVal * 100), 100) : 0;
+        const bBarColor = bIsGood ? '#16a34a' : '#d97706';
+        const bLabel = bIsGood ? 'Tingkat similarity rendah' : 'Similarity tinggi';
+        const bClass = bIsGood ? 'metric-success' : 'metric-warning';
+        const bIcon = bIsGood ? 'check-circle' : 'alert-triangle';
+
         card.innerHTML = `
             <!-- Card Header -->
             <div class="card-header flex justify-between items-center">
@@ -1094,6 +1123,30 @@ function failedRenderStackedDiff(original, paraphrasedArray, pScores, bScores, o
                 <button id="diff-toggle-failed-${index}" class="diff-toggle-btn">
                     <div id="toggle-circle-failed-${index}" class="diff-toggle-thumb"></div>
                 </button>
+            </div>
+
+            <!-- Metrik Evaluasi -->
+            <div class="metric-eval-section">
+                <div class="metric-eval-header">
+                    <i data-lucide="bar-chart-3" class="w-3.5 h-3.5" style="color:var(--clr-muted)"></i>
+                    <span class="section-label" style="margin-bottom:0;font-weight:700">Metrik Evaluasi</span>
+                </div>
+                <div class="metric-eval-rows">
+                    <!-- pScore: warning/success indicator -->
+                    ${pWarningHtml}
+                    <!-- bScore: bar visualization -->
+                    <div class="metric-row ${bClass}">
+                        <div class="metric-row-left">
+                            <i data-lucide="${bIcon}" class="w-3.5 h-3.5 metric-icon"></i>
+                            <div class="metric-info">
+                                <span class="metric-desc">${bLabel}</span>
+                                <div class="metric-bar-track">
+                                    <div class="metric-bar-fill" style="width:${bBarPercent}%;background:${bBarColor}"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Diff Content -->
@@ -1388,7 +1441,7 @@ function setupEventListeners() {
         sendPrompt(mode);
     };
     // document.getElementById("paraphrase-fast-btn").onclick = () => sendPrompt('fast');
-    // document.getElementById("test-btn").onclick = fetchFailedTest;
+    document.getElementById("test-btn").onclick = fetchFailedTest;
     // 3. Insert Action [cite: 470]
     document.getElementById("insert-btn").onclick = () => {
         // Logika insertText nanti disini
