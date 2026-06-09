@@ -73,8 +73,8 @@ app.get('/api/paraphrase/failed-test', (req, res) => {
             "Aplikasi kecerdasan buatan di penulisan karya ilmiah sangat menolong percepatan penyelesaian tugas akhir bagi mahasiswa semester akhir.",
             "Implementasi teknologi AI dalam menulis karya ilmiah bisa mendukung efisiensi waktu penyelesaian tugas akhir untuk mahasiswa tingkat akhir."
         ],
-        pScore: [-11, 0.78, 0.92],
-        bScore: [0.1, 0.55, 0.75],
+        pScore: [-11, -1, 0.92],
+        bScore: [0.1, 0.9, 0.75],
         logId: "dummy-test-log-id"
     };
 
