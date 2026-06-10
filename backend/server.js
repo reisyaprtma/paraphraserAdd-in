@@ -142,7 +142,7 @@ app.post('/api/paraphrase', async (req, res) => {
             paraPLUIE_score = paraphraseResult.pScore;
             BLEU_score = paraphraseResult.bScore;
 
-            if (paraPLUIE_score >= 0 && BLEU_score <= 0.7) {
+            if (paraPLUIE_score > 0 && BLEU_score < 0.7) {
                 successResult = paraphraseResult;
                 break;
             } else {

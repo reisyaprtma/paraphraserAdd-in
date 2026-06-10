@@ -76,7 +76,7 @@ ${MODE_PROMPTS[mode] || MODE_PROMPTS['formal']}
 
 <final_instruction>
 Remember to think step-by-step about the sentence structure and vocabulary changes. 
-However, your internal thoughts MUST NOT be printed outside the JSON. 
+However, your internal thoughts, about how you paraphrased the text technically or why you made certain changes, can be printed in explanation field. NOT IN TEXT FIELD! 
 </final_instruction>
 `;
     const sysPrompt = await buildSysPrompt(mode);
@@ -85,9 +85,10 @@ However, your internal thoughts MUST NOT be printed outside the JSON.
     const responseSchema = {
         type: "OBJECT",
         properties: {
-            text: { type: "STRING" }
+            text: { type: "STRING" },
+            explanation: { type: "STRING" },
         },
-        required: ["text"]
+        required: ["text", "explanation"]
     };
     const client = new GoogleGenAI({
         vertexai: true,
@@ -103,7 +104,7 @@ However, your internal thoughts MUST NOT be printed outside the JSON.
         model: model,
         config: {
             systemInstruction: sysPrompt,
-            temperature: 0.7,
+            temperature: 1,
             thinkingConfig: {
                 thinkingLevel: "low"
             },
@@ -124,6 +125,8 @@ However, your internal thoughts MUST NOT be printed outside the JSON.
     }
     const jsonResponse = JSON.parse(response.text);
 
+    const explanation = jsonResponse.explanation;
+    
     let paraphrasedText = jsonResponse.text.trim();
     console.log(paraphrasedText)
     if (paraphrasedText == "[ERROR_INVALID_TEXT]") {
@@ -146,6 +149,7 @@ However, your internal thoughts MUST NOT be printed outside the JSON.
                     sourceText: originalText ?? sourceText,
                     tokenizedInput: tokenizedText ?? null,
                     paraphrasedText: paraphrasedText,
+                    explanation: explanation ?? null,
                     iteration: iterationNumber,
                     bleuScore: BLEU_score ?? null,
                     paraPluieScore: paraPLUIE_score ?? null,

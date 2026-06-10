@@ -25,6 +25,8 @@ model Paraphrase {
   paraphrasedText  String   @db.Text
   iteration        Int      @default(1)
 
+  explanation      String?  @db.Text
+
   // Metrik Evaluasi
   bleuScore        Float?
   paraPluieScore   Float?
