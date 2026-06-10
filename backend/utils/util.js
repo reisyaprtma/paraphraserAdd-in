@@ -106,7 +106,7 @@ However, your internal thoughts, about how you paraphrased the text technically 
             systemInstruction: sysPrompt,
             temperature: 1,
             thinkingConfig: {
-                thinkingLevel: "low"
+                thinkingLevel: "medium"
             },
             responseMimeType: 'application/json',
             responseSchema: responseSchema,
