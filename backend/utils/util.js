@@ -76,7 +76,7 @@ ${MODE_PROMPTS[mode] || MODE_PROMPTS['formal']}
 
 <final_instruction>
 Remember to think step-by-step about the sentence structure and vocabulary changes. 
-However, your internal thoughts, about how you paraphrased the text technically or why you made certain changes, can be printed in explanation field. NOT IN TEXT FIELD! 
+Do not output thoughts, or any text outside the paraphrased text.
 </final_instruction>
 `;
     const sysPrompt = await buildSysPrompt(mode);
@@ -85,10 +85,9 @@ However, your internal thoughts, about how you paraphrased the text technically 
     const responseSchema = {
         type: "OBJECT",
         properties: {
-            text: { type: "STRING" },
-            explanation: { type: "STRING" },
+            text: { type: "STRING" }
         },
-        required: ["text", "explanation"]
+        required: ["text"]
     };
     const client = new GoogleGenAI({
         vertexai: true,
@@ -104,9 +103,9 @@ However, your internal thoughts, about how you paraphrased the text technically 
         model: model,
         config: {
             systemInstruction: sysPrompt,
-            temperature: 1,
+            temperature: 0.7,
             thinkingConfig: {
-                thinkingLevel: "medium"
+                thinkingLevel: "low"
             },
             responseMimeType: 'application/json',
             responseSchema: responseSchema,
@@ -125,7 +124,7 @@ However, your internal thoughts, about how you paraphrased the text technically 
     }
     const jsonResponse = JSON.parse(response.text);
 
-    const explanation = jsonResponse.explanation;
+    // const explanation = jsonResponse.explanation;
     
     let paraphrasedText = jsonResponse.text.trim();
     console.log(paraphrasedText)
@@ -149,7 +148,7 @@ However, your internal thoughts, about how you paraphrased the text technically 
                     sourceText: originalText ?? sourceText,
                     tokenizedInput: tokenizedText ?? null,
                     paraphrasedText: paraphrasedText,
-                    explanation: explanation ?? null,
+                    explanation: null,
                     iteration: iterationNumber,
                     bleuScore: BLEU_score ?? null,
                     paraPluieScore: paraPLUIE_score ?? null,
@@ -223,7 +222,7 @@ async function paraPLUIE(S, H) {
     const response_schema = { "type": "STRING", "enum": ["Yes", "No"] };
     const generationConfig = {
         maxOutputTokens: 1000,
-        temperature: 0.7,
+        temperature: 0.1,
         responseMimeType: "text/x.enum",
         responseSchema: response_schema,
         responseLogprobs: true,
