@@ -1404,12 +1404,24 @@ function setupEventListeners() {
         settingsMenu.classList.add("hidden");
     };
 
+    // Muat preferensi dark mode dari localStorage saat taskpane dibuka
+    const savedTheme = localStorage.getItem("paraphraser-theme");
+    if (savedTheme === "dark") {
+        htmlEl.classList.add("dark");
+        toggleCircle.classList.add("translate-x-5");
+    } else {
+        htmlEl.classList.remove("dark");
+        toggleCircle.classList.remove("translate-x-5");
+    }
+
     darkModeToggle.onclick = () => {
         htmlEl.classList.toggle("dark");
         if (htmlEl.classList.contains("dark")) {
             toggleCircle.classList.add("translate-x-5");
+            localStorage.setItem("paraphraser-theme", "dark");
         } else {
             toggleCircle.classList.remove("translate-x-5");
+            localStorage.setItem("paraphraser-theme", "light");
         }
     };
 
