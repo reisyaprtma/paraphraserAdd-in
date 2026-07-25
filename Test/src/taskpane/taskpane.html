@@ -4,81 +4,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Paraphraser Add-in</title>
+    <title>FrasaTwist — Paraphraser Add-in</title>
+    <meta name="description" content="FrasaTwist: Add-in parafrase cerdas untuk Microsoft Word, mendukung gaya formal dan akademik.">
     <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/diff-match-patch/1.0.5/index.js"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        heavy: '#1F2022',
-                        brand: {
-                            mint: '#B6FF8F',
-                            lavender: '#C4C0FF'
+                        primary: {
+                            50: 'var(--p50)', 100: 'var(--p100)', 200: 'var(--p200)',
+                            500: 'var(--p500)', 600: 'var(--p600)', 700: 'var(--p700)',
+                            800: 'var(--p800)', 900: 'var(--p900)',
                         },
-                        status: {
-                            success: '#B6FF8F',
-                            danger: '#FF6B6B',
-                            warning: '#FFD93D',
-                            info: '#73C2FB'
-                        }
-                    },
-                    boxShadow: {
-                        'float': '0 12px 30px rgba(0,0,0,0.08)',
-                        'float-dark': '0 16px 40px rgba(0,0,0,0.6)'
                     }
                 }
             }
         }
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/diff-match-patch/1.0.5/index.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsdiff/5.1.0/diff.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="tokens.css">
     <link rel="stylesheet" href="taskpane.css">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
-<body class="transition-colors duration-300 overflow-x-hidden">
+<body>
 
     <!-- ── Header ──────────────────────────────────────── -->
     <header>
         <div class="header-inner">
-            <!-- Brand -->
-            <div class="flex items-center gap-2.5">
-                <!-- <div class="brand-logo float-1">fT</div> -->
+            <div class="header-brand">
+                <img src="../../assets/logo.png" alt="FrasaTwist Logo" class="brand-logo-img" />
                 <h1 class="brand-name">FrasaTwist</h1>
             </div>
-
-            <!-- Settings -->
             <div class="relative">
-                <div class="flex">
-                    <button id="settings-btn" title="Pengaturan" class="settings-btn">
+                <div class="header-actions">
+                    <button id="settings-btn" class="settings-btn" aria-label="Buka Pengaturan">
                         <i data-lucide="settings" class="w-4 h-4"></i>
                     </button>
-
-                    <button id="help-btn" title="Bantuan" class="settings-btn">
+                    <button id="help-btn" class="settings-btn" aria-label="Buka Bantuan">
                         <i data-lucide="info" class="w-4 h-4"></i>
                     </button>
                 </div>
 
+                <!-- Settings Dropdown -->
                 <div id="settings-menu" class="settings-dropdown hidden">
-                    <p class="settings-label">Pengaturan</p>
+                    <p class="dropdown-title">Pengaturan</p>
                     <div class="flex items-center justify-between">
-                        <span class="text-xs font-medium" style="color:var(--clr-text)">Mode Gelap</span>
-                        <button id="dark-mode-toggle" class="toggle-track">
+                        <span class="dropdown-item-label">Mode gelap</span>
+                        <button id="dark-mode-toggle" class="toggle-track" aria-label="Aktifkan mode gelap">
                             <div id="toggle-circle" class="toggle-thumb"></div>
                         </button>
                     </div>
                 </div>
+
+                <!-- Help Dropdown -->
                 <div id="help-menu" class="help-dropdown hidden">
-                    <p class="help-label">Bantuan</p>
-                    <div class="flex flex-col items-start justify-between">
-                        <a class="hover:bg-gray-100 w-full rounded-md" href="https://forms.gle/NEf3ts4Byxuwc7K89">
-                            <span class="text-xs font-medium" style="color:var(--clr-text)">Formulir Feedback</span>
+                    <p class="dropdown-title">Bantuan</p>
+                    <div class="flex flex-col gap-0.5">
+                        <a class="dropdown-item" href="https://forms.gle/NEf3ts4Byxuwc7K89" target="_blank" rel="noopener">
+                            <i data-lucide="message-square" class="w-3.5 h-3.5 flex-shrink-0"></i>
+                            <span>Formulir feedback</span>
                         </a>
-                        <button class="text-left hover:bg-gray-100 w-full rounded-md" id="test-btn">
-                            <span class="text-xs font-medium" style="color:var(--clr-text)">Simulasi Hasil Gagal</span>
+                        <button class="dropdown-item w-full text-left" id="test-btn">
+                            <i data-lucide="flask-conical" class="w-3.5 h-3.5 flex-shrink-0"></i>
+                            <span>Simulasi hasil gagal</span>
                         </button>
                     </div>
                 </div>
@@ -88,99 +84,61 @@
 
     <!-- ── Main ────────────────────────────────────────── -->
     <main>
-        
-        <div id="maintanance-box" class="alert-box warning hidden">
+
+        <!-- Maintenance Banner -->
+        <div id="maintanance-box" class="alert-box alert-warning hidden">
             <i data-lucide="alert-triangle" class="alert-icon w-4 h-4"></i>
             <div>
-                <p class="alert-title">Maaf Sedang Terjadi Maintanance</p>
-                <p class="mt-0.5" style="font-size:11px">Silahkan Coba Kembali Beberapa Hari Lagi.</p>
+                <p class="alert-title">Sedang maintenance</p>
+                <p class="alert-body">Silahkan coba kembali beberapa hari lagi.</p>
             </div>
         </div>
-        <!-- Input Section -->
-        <section id="input-section" class="animate-fade-in-up">
-            
-            <!-- ── Mode Selection ─────────────────────────────── -->
-            <div class="mt-3">
-                <p class="section-label" style="margin-bottom:6px">Mode Parafrase</p>
-                <div id="mode-selector" style="
-                    display: flex;
-                    gap: 8px;
-                    background: var(--clr-surface, rgba(0,0,0,0.06));
-                    border-radius: 10px;
-                    padding: 4px;
-                    border: 1px solid var(--clr-border, rgba(0,0,0,0.08));
-                ">
-                    <button type="button" id="mode-formal" data-mode="formal" class="mode-btn mode-btn--active" style="
-                        flex: 1;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        gap: 5px;
-                        padding: 7px 10px;
-                        border-radius: 7px;
-                        border: none;
-                        font-size: 12px;
-                        font-weight: 600;
-                        cursor: pointer;
-                        transition: all 0.2s ease;
-                        background: var(--clr-brand, #B6FF8F);
-                        color: #1a1a1a;
-                        box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-                    ">
+
+        <!-- ── Input Card ─────────────────────────────────── -->
+        <div class="card animate-fade-in-up" id="input-section">
+
+            <!-- Mode parafrase -->
+            <div class="card-section">
+                <p class="card-label">Mode parafrase</p>
+                <div id="mode-selector" class="mode-selector">
+                    <button type="button" id="mode-formal" data-mode="formal" class="mode-btn mode-btn--active">
                         <i data-lucide="briefcase" class="w-3.5 h-3.5" style="pointer-events:none"></i>
                         Formal
                     </button>
-                    <button type="button" id="mode-academic" data-mode="academic" class="mode-btn" style="
-                        flex: 1;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        gap: 5px;
-                        padding: 7px 10px;
-                        border-radius: 7px;
-                        border: none;
-                        font-size: 12px;
-                        font-weight: 600;
-                        cursor: pointer;
-                        transition: all 0.2s ease;
-                        background: transparent;
-                        color: var(--clr-text, #555);
-                    ">
+                    <button type="button" id="mode-academic" data-mode="academic" class="mode-btn">
                         <i data-lucide="graduation-cap" class="w-3.5 h-3.5" style="pointer-events:none"></i>
                         Akademik
                     </button>
                 </div>
             </div>
-            <p class="section-label" style="margin-top: 10px;">Teks Terseleksi <span style="font-weight:400;opacity:0.65">(Maks 750
-                    Kata)</span></p>
-            <textarea id="source-text" class="source-textarea" readonly
-                placeholder="Seleksi teks di dokumen Word untuk memulai…"></textarea>
 
-            <div class="mt-1.5">
-                <span id="selection-status" class="status-badge">
-                    <i data-lucide="mouse-pointer-2" class="w-3 h-3"></i>
-                    Menunggu seleksi…
-                </span>
+            <div class="card-divider"></div>
+
+            <!-- Teks Terseleksi -->
+            <div class="card-section">
+                <div class="card-label-row">
+                    <p class="card-label">Teks terseleksi</p>
+                    <span class="card-label-note">Maks 750 kata</span>
+                </div>
+                <textarea id="source-text" class="source-textarea" readonly
+                    placeholder="Seleksi teks di dokumen Word untuk memulai…"></textarea>
+                <div class="mt-2 flex items-center justify-between gap-2">
+                    <span id="selection-status" class="status-badge">
+                        <i data-lucide="mouse-pointer-2" class="w-3 h-3"></i>
+                        Menunggu seleksi…
+                    </span>
+                </div>
+                <div class="mt-3">
+                    <button id="paraphrase-btn" class="btn-primary" disabled aria-label="Mulai proses parafrase">
+                        <i data-lucide="sparkles" class="w-4 h-4"></i>
+                        Parafrase
+                    </button>
+                </div>
             </div>
-        </section>
 
-        <!-- Action Buttons -->
-        <section class="flex flex-col gap-3 animate-fade-in-up delay-100">
-            <!-- <button id="paraphrase-fast-btn" class="btn-secondary">
-                <i data-lucide="sparkles" class="w-4 h-4"></i>
-                Parafrase Cepat
-            </button> -->
-            <button id="paraphrase-btn" class="btn-primary" disabled>
-                <i data-lucide="sparkles" class="w-4 h-4"></i>
-                Parafrase
-            </button>
-            <!-- <button id="test-btn" class="btn-danger">
-                <i data-lucide="flask-conical" class="w-3.5 h-3.5"></i>
-                Simulasi Hasil Gagal
-            </button> -->
-        </section>
+        </div>
 
-        <!-- Loading State -->
+        <!-- ── Loading State ─────────────────────────────── -->
         <section id="loading-state" class="hidden">
             <div class="spinner-wrap animate-fade-in">
                 <div class="spinner">
@@ -192,65 +150,62 @@
             </div>
         </section>
 
-        <!-- Error Box -->
-        <div id="error-box" class="alert-box error hidden">
+        <!-- ── Error Box ──────────────────────────────────── -->
+        <div id="error-box" class="alert-box alert-danger hidden">
             <i data-lucide="alert-triangle" class="alert-icon w-4 h-4"></i>
             <div>
-                <p class="alert-title">Terjadi Kesalahan Parafrase</p>
-                <p id="error-message" class="mt-0.5" style="font-size:11px"></p>
+                <p class="alert-title">Terjadi kesalahan</p>
+                <p id="error-message" class="alert-body"></p>
             </div>
         </div>
 
-        <!-- Warning Box -->
-        <div id="warning-box" class="alert-box warning hidden">
+        <!-- ── Warning Box ────────────────────────────────── -->
+        <div id="warning-box" class="alert-box alert-warning hidden">
             <i data-lucide="alert-triangle" class="alert-icon w-4 h-4"></i>
             <div>
-                <p class="alert-title">Peringatan Validasi</p>
-                <p class="mt-0.5" style="font-size:11px">Skor kemiripan makna / keragaman leksikal rendah. Harap periksa
-                    kembali hasil parafrase berikut.</p>
+                <p class="alert-title">Peringatan</p>
+                <p class="alert-body">Skor kemiripan makna / keragaman leksikal rendah. Harap periksa kembali hasil parafrase.</p>
             </div>
         </div>
 
-        <!-- Result Section -->
+        <!-- ── Result Section ─────────────────────────────── -->
         <section id="result-section" class="hidden animate-slide-up">
 
-            <!-- Diff Card -->
+            <!-- Result Card -->
             <div class="card">
-                <!-- Card Header -->
                 <div class="card-header">
-                    <span class="section-label" style="margin-bottom:0">Tampilkan Teks Dibuang</span>
-                    <button id="diff-toggle" class="diff-toggle-btn">
-                        <div id="toggle-circle-2" class="diff-toggle-thumb"></div>
-                    </button>
+                    <span class="card-heading">Hasil parafrase</span>
+                    <div class="flex items-center gap-2">
+                        <span class="card-heading-meta">Teks dibuang</span>
+                        <button id="diff-toggle" class="diff-toggle-btn" aria-label="Tampilkan atau sembunyikan teks yang dihapus">
+                            <div id="toggle-circle-2" class="diff-toggle-thumb"></div>
+                        </button>
+                    </div>
                 </div>
 
-                <!-- Diff Content -->
                 <div class="card-body">
                     <div id="result-content"></div>
                 </div>
 
-                <!-- Sentence Tracker Minimalis -->
-                <div id="sentence-tracker" class="flex items-center justify-between px-4 py-2 border-b" style="border-color: var(--clr-border); background: rgba(0,0,0,0.015);">
-                    <button id="sentence-prev" class="btn-icon" style="width:24px;height:24px" title="Kalimat Sebelumnya" disabled>
+                <div id="sentence-tracker" class="sentence-tracker-bar">
+                    <button id="sentence-prev" class="btn-icon" style="width:24px;height:24px"
+                        aria-label="Navigasi ke kalimat sebelumnya" disabled>
                         <i data-lucide="chevron-left" class="w-3.5 h-3.5"></i>
                     </button>
-                    <span id="sentence-position" class="text-[11px] font-semibold tracking-wide text-gray-500 uppercase">Semua kalimat</span>
-                    <button id="sentence-next" class="btn-icon" style="width:24px;height:24px" title="Kalimat Berikutnya" disabled>
+                    <span id="sentence-position" class="sentence-position-label">Semua kalimat</span>
+                    <button id="sentence-next" class="btn-icon" style="width:24px;height:24px"
+                        aria-label="Navigasi ke kalimat berikutnya" disabled>
                         <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
                     </button>
                 </div>
 
-                <!-- Card Footer: counts + action buttons -->
                 <div class="card-footer">
-                    <div class="diff-count">
-                        <!-- <span class="removed">− <span id="removal-count"></span></span> -->
-                        <span class="section-label">Jumlah Kata: <span id="addition-count"></span></span>
-                    </div>
+                    <span class="card-footer-meta">Jumlah kata: <strong id="addition-count"></strong></span>
                     <div class="flex gap-2">
-                        <button id="copy-btn" class="btn-icon" title="Salin Teks">
+                        <button id="copy-btn" class="btn-icon" aria-label="Salin teks hasil parafrase">
                             <i data-lucide="copy" class="w-3.5 h-3.5"></i>
                         </button>
-                        <button id="insert-btn" class="btn-icon filled" title="Sisipkan ke Dokumen">
+                        <button id="insert-btn" class="btn-icon filled" aria-label="Sisipkan teks ke dokumen Word">
                             <i data-lucide="download" class="w-3.5 h-3.5"></i>
                         </button>
                     </div>
@@ -258,77 +213,66 @@
             </div>
 
             <!-- Feedback Card -->
-            <div class="card" style="overflow:hidden">
-                <!-- Card Header -->
-                <div style="padding:10px 14px 8px;display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--clr-border)">
-                    <i data-lucide="star" class="w-3.5 h-3.5" style="color:var(--clr-brand)"></i>
-                    <span class="section-label" style="margin-bottom:0;font-weight:700">Beri Penilaian</span>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-heading">Penilaian</span>
+                    <i data-lucide="star" class="w-4 h-4 feedback-star-icon"></i>
                 </div>
 
-                <!-- Rating Rows -->
-                <div style="display:flex;flex-direction:column;padding:6px 0">
+                <div class="card-section-plain">
 
-                    <!-- Row: Makna -->
-                    <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 14px;gap:8px">
-                        <span style="font-size:11px;color:var(--clr-text);opacity:0.8;flex:1;line-height:1.3">Makna sesuai teks asli</span>
-                        <div id="star-rating-semantic" style="display:flex;gap:1px;flex-shrink:0">
-                            <button type="button" class="star-btn" data-value="1"><i data-lucide="star" class="w-4 h-4 text-gray-300 transition-colors pointer-events-none"></i></button>
-                            <button type="button" class="star-btn" data-value="2"><i data-lucide="star" class="w-4 h-4 text-gray-300 transition-colors pointer-events-none"></i></button>
-                            <button type="button" class="star-btn" data-value="3"><i data-lucide="star" class="w-4 h-4 text-gray-300 transition-colors pointer-events-none"></i></button>
-                            <button type="button" class="star-btn" data-value="4"><i data-lucide="star" class="w-4 h-4 text-gray-300 transition-colors pointer-events-none"></i></button>
-                            <button type="button" class="star-btn" data-value="5"><i data-lucide="star" class="w-4 h-4 text-gray-300 transition-colors pointer-events-none"></i></button>
+                    <div class="rating-row">
+                        <span class="rating-label">Makna sesuai teks asli</span>
+                        <div id="star-rating-semantic" class="star-group">
+                            <button type="button" class="star-btn" data-value="1" aria-label="Nilai 1 bintang"><i data-lucide="star" class="w-4 h-4 star-icon pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="2" aria-label="Nilai 2 bintang"><i data-lucide="star" class="w-4 h-4 star-icon pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="3" aria-label="Nilai 3 bintang"><i data-lucide="star" class="w-4 h-4 star-icon pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="4" aria-label="Nilai 4 bintang"><i data-lucide="star" class="w-4 h-4 star-icon pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="5" aria-label="Nilai 5 bintang"><i data-lucide="star" class="w-4 h-4 star-icon pointer-events-none"></i></button>
+                        </div>
+                    </div>
+                    <div class="rating-divider"></div>
+                    <div class="rating-row">
+                        <span class="rating-label">Kosakata beragam</span>
+                        <div id="star-rating-lexical" class="star-group">
+                            <button type="button" class="star-btn" data-value="1" aria-label="Nilai 1 bintang"><i data-lucide="star" class="w-4 h-4 star-icon pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="2" aria-label="Nilai 2 bintang"><i data-lucide="star" class="w-4 h-4 star-icon pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="3" aria-label="Nilai 3 bintang"><i data-lucide="star" class="w-4 h-4 star-icon pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="4" aria-label="Nilai 4 bintang"><i data-lucide="star" class="w-4 h-4 star-icon pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="5" aria-label="Nilai 5 bintang"><i data-lucide="star" class="w-4 h-4 star-icon pointer-events-none"></i></button>
+                        </div>
+                    </div>
+                    <div class="rating-divider"></div>
+                    <div class="rating-row">
+                        <span class="rating-label">Tata bahasa akurat</span>
+                        <div id="star-rating-gramatical" class="star-group">
+                            <button type="button" class="star-btn" data-value="1" aria-label="Nilai 1 bintang"><i data-lucide="star" class="w-4 h-4 star-icon pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="2" aria-label="Nilai 2 bintang"><i data-lucide="star" class="w-4 h-4 star-icon pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="3" aria-label="Nilai 3 bintang"><i data-lucide="star" class="w-4 h-4 star-icon pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="4" aria-label="Nilai 4 bintang"><i data-lucide="star" class="w-4 h-4 star-icon pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="5" aria-label="Nilai 5 bintang"><i data-lucide="star" class="w-4 h-4 star-icon pointer-events-none"></i></button>
+                        </div>
+                    </div>
+                    <div class="rating-divider"></div>
+                    <div class="rating-row">
+                        <span class="rating-label">Struktur kalimat variatif</span>
+                        <div id="star-rating-syntactic" class="star-group">
+                            <button type="button" class="star-btn" data-value="1" aria-label="Nilai 1 bintang"><i data-lucide="star" class="w-4 h-4 star-icon pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="2" aria-label="Nilai 2 bintang"><i data-lucide="star" class="w-4 h-4 star-icon pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="3" aria-label="Nilai 3 bintang"><i data-lucide="star" class="w-4 h-4 star-icon pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="4" aria-label="Nilai 4 bintang"><i data-lucide="star" class="w-4 h-4 star-icon pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="5" aria-label="Nilai 5 bintang"><i data-lucide="star" class="w-4 h-4 star-icon pointer-events-none"></i></button>
                         </div>
                     </div>
 
-                    <div style="height:1px;background:var(--clr-border);margin:0 14px;opacity:0.5"></div>
-
-                    <!-- Row: Kosakata -->
-                    <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 14px;gap:8px">
-                        <span style="font-size:11px;color:var(--clr-text);opacity:0.8;flex:1;line-height:1.3">Kosakata beragam</span>
-                        <div id="star-rating-lexical" style="display:flex;gap:1px;flex-shrink:0">
-                            <button type="button" class="star-btn" data-value="1"><i data-lucide="star" class="w-4 h-4 text-gray-300 transition-colors pointer-events-none"></i></button>
-                            <button type="button" class="star-btn" data-value="2"><i data-lucide="star" class="w-4 h-4 text-gray-300 transition-colors pointer-events-none"></i></button>
-                            <button type="button" class="star-btn" data-value="3"><i data-lucide="star" class="w-4 h-4 text-gray-300 transition-colors pointer-events-none"></i></button>
-                            <button type="button" class="star-btn" data-value="4"><i data-lucide="star" class="w-4 h-4 text-gray-300 transition-colors pointer-events-none"></i></button>
-                            <button type="button" class="star-btn" data-value="5"><i data-lucide="star" class="w-4 h-4 text-gray-300 transition-colors pointer-events-none"></i></button>
-                        </div>
-                    </div>
-
-                    <div style="height:1px;background:var(--clr-border);margin:0 14px;opacity:0.5"></div>
-
-                    <!-- Row: Tata Bahasa -->
-                    <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 14px;gap:8px">
-                        <span style="font-size:11px;color:var(--clr-text);opacity:0.8;flex:1;line-height:1.3">Tata bahasa akurat</span>
-                        <div id="star-rating-gramatical" style="display:flex;gap:1px;flex-shrink:0">
-                            <button type="button" class="star-btn" data-value="1"><i data-lucide="star" class="w-4 h-4 text-gray-300 transition-colors pointer-events-none"></i></button>
-                            <button type="button" class="star-btn" data-value="2"><i data-lucide="star" class="w-4 h-4 text-gray-300 transition-colors pointer-events-none"></i></button>
-                            <button type="button" class="star-btn" data-value="3"><i data-lucide="star" class="w-4 h-4 text-gray-300 transition-colors pointer-events-none"></i></button>
-                            <button type="button" class="star-btn" data-value="4"><i data-lucide="star" class="w-4 h-4 text-gray-300 transition-colors pointer-events-none"></i></button>
-                            <button type="button" class="star-btn" data-value="5"><i data-lucide="star" class="w-4 h-4 text-gray-300 transition-colors pointer-events-none"></i></button>
-                        </div>
-                    </div>
-
-                    <div style="height:1px;background:var(--clr-border);margin:0 14px;opacity:0.5"></div>
-
-                    <!-- Row: Struktur Kalimat -->
-                    <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 14px;gap:8px">
-                        <span style="font-size:11px;color:var(--clr-text);opacity:0.8;flex:1;line-height:1.3">Struktur kalimat variatif</span>
-                        <div id="star-rating-syntactic" style="display:flex;gap:1px;flex-shrink:0">
-                            <button type="button" class="star-btn" data-value="1"><i data-lucide="star" class="w-4 h-4 text-gray-300 transition-colors pointer-events-none"></i></button>
-                            <button type="button" class="star-btn" data-value="2"><i data-lucide="star" class="w-4 h-4 text-gray-300 transition-colors pointer-events-none"></i></button>
-                            <button type="button" class="star-btn" data-value="3"><i data-lucide="star" class="w-4 h-4 text-gray-300 transition-colors pointer-events-none"></i></button>
-                            <button type="button" class="star-btn" data-value="4"><i data-lucide="star" class="w-4 h-4 text-gray-300 transition-colors pointer-events-none"></i></button>
-                            <button type="button" class="star-btn" data-value="5"><i data-lucide="star" class="w-4 h-4 text-gray-300 transition-colors pointer-events-none"></i></button>
-                        </div>
-                    </div>
                 </div>
 
-                <!-- Comment & Submit -->
-                <div style="padding:8px 14px 12px;display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--clr-border)">
+                <div class="feedback-footer">
                     <textarea id="feedback-comment" rows="2" class="feedback-textarea"
-                        placeholder="Ada saran atau kendala? (Opsional)"></textarea>
+                        placeholder="Saran atau catatan? (opsional)"
+                        aria-label="Komentar feedback opsional"></textarea>
                     <button id="submit-feedback-btn" class="btn-submit-feedback">
-                        Kirim Penilaian
+                        Kirim penilaian
                     </button>
                 </div>
             </div>
@@ -341,11 +285,14 @@
     </main>
 
     <!-- Toast Notification -->
-    <div id="toast"></div>
+    <div id="toast" role="status" aria-live="polite"></div>
 
-    <script src="taskpane.js"></script>
     <script>
-        lucide.createIcons();
+        document.addEventListener("DOMContentLoaded", function () {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        });
     </script>
 </body>
 

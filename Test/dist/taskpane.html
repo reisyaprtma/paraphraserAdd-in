@@ -1,1 +1,299 @@
-<!doctype html><html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ScholarAssist Add-in</title><script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script><script src="https://cdn.tailwindcss.com"></script><script>tailwind.config={darkMode:"class",theme:{extend:{colors:{primary:{50:"#f0f9ff",100:"#e0f2fe",500:"#0ea5e9",600:"#0284c7",700:"#0369a1"}}}}}</script><link rel="stylesheet" href="4de22089167446c561b9.css"><script src="https://unpkg.com/lucide@latest"></script><script defer="defer" src="polyfill.js"></script><script defer="defer" src="taskpane.js"></script></head><body class="bg-gray-50 text-gray-800 dark:bg-slate-900 dark:text-gray-100 transition-colors duration-300 font-sans overflow-x-hidden"><header class="flex justify-between items-center p-4 bg-white dark:bg-slate-800 shadow-sm sticky top-0 z-50"><div class="flex items-center space-x-2"><div class="w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center text-white font-bold shadow-lg shadow-primary-500/30">SA</div><h1 class="font-bold text-lg tracking-tight">ScholarAssist</h1></div><button id="settings-btn" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors text-gray-500 dark:text-gray-400"><i data-lucide="settings" class="w-5 h-5"></i></button></header><main class="p-4 space-y-6 relative min-h-screen pb-20"><div id="settings-menu" class="hidden absolute right-4 top-2 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-gray-100 dark:border-slate-700 z-50 transform transition-all duration-200 origin-top-right"><div class="p-4"><h3 class="text-xs font-semibold text-gray-400 uppercase mb-3">Pengaturan</h3><div class="flex items-center justify-between"><span class="text-sm">Mode Gelap</span> <button id="dark-mode-toggle" class="w-10 h-5 bg-gray-300 dark:bg-primary-600 rounded-full flex items-center transition-colors p-1 cursor-pointer"><div id="toggle-circle" class="w-3 h-3 bg-white rounded-full shadow-md transform transition-transform duration-300"></div></button></div></div></div><section id="input-section" class="animate-fade-in-up"><label class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Teks Terseleksi</label><div class="relative group"><textarea id="source-text" readonly="readonly" class="w-full h-32 p-3 text-sm bg-white dark:bg-slate-800 border-2 border-dashed border-gray-300 dark:border-slate-600 rounded-xl focus:outline-none resize-none transition-all duration-300 group-hover:border-primary-500 dark:group-hover:border-primary-500" placeholder="Seleksi teks di dokumen Word untuk memulai..."></textarea><div id="selection-status" class="absolute bottom-3 right-3 text-xs px-2 py-1 rounded-md bg-gray-100 dark:bg-slate-700 text-gray-500">Menunggu seleksi...</div></div></section><section class="animate-fade-in-up"><label for="paraphrase-mode" class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Mode Parafrase</label> <select id="paraphrase-mode" class="w-full p-3 text-sm bg-white dark:bg-slate-800 border-2 border-gray-300 dark:border-slate-600 rounded-xl focus:outline-none focus:border-primary-500 dark:focus:border-primary-500 transition-colors"><option value="standard">Standard</option><option value="formal">Formal</option><option value="fluency">Kefasihan</option><option value="shorten">Persingkat</option><option value="expand">Perluas</option></select></section><section class="flex justify-center animate-fade-in-up delay-100"><button id="paraphrase-btn" class="relative w-full py-3 px-6 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-semibold rounded-xl shadow-lg shadow-primary-500/30 transform transition-all duration-200 hover:scale-[1.02] active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed overflow-hidden group"><span class="relative z-10 flex items-center justify-center gap-2"><i data-lucide="sparkles" class="w-4 h-4"></i> Parafrase Sekarang</span><div class="absolute top-0 -inset-full h-full w-1/2 z-5 block transform -skew-x-12 bg-gradient-to-r from-transparent to-white opacity-20 group-hover:animate-shine"/></button></section><section id="loading-state" class="hidden py-8 text-center animate-fade-in"><div class="relative w-16 h-16 mx-auto mb-4"><div class="absolute inset-0 rounded-full border-4 border-gray-200 dark:border-slate-700"></div><div class="absolute inset-0 rounded-full border-4 border-primary-500 border-t-transparent animate-spin"></div></div><p class="text-sm text-gray-500 animate-pulse">Sedang memproses dengan Gemini AI...</p><p class="text-xs text-gray-400 mt-1">Mengamankan sitasi & rumus...</p></section><section id="result-section" class="hidden space-y-4 animate-slide-up"><div id="warning-box" class="hidden bg-orange-50 dark:bg-orange-900/20 border-l-4 border-orange-500 p-3 rounded-r-lg flex items-start gap-3"><i data-lucide="alert-triangle" class="w-5 h-5 text-orange-500 mt-0.5 flex-shrink-0"></i><div><h4 class="text-sm font-bold text-orange-700 dark:text-orange-400">Peringatan Validasi Semantik</h4><p class="text-xs text-orange-600 dark:text-orange-300 mt-1">Skor kemiripan makna rendah. Harap periksa kembali hasil parafrase.</p></div></div><div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden"><div class="bg-gray-50 dark:bg-slate-700/50 px-4 py-2 border-b border-gray-100 dark:border-slate-700 flex justify-between items-center"><span class="text-xs font-semibold text-gray-500 uppercase">Hasil Parafrase (Diff View)</span> <span class="text-xs bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-300 px-2 py-0.5 rounded-full">Score: 0.98</span></div><div id="result-content" class="p-4 text-sm leading-relaxed min-h-[100px]"></div></div><div class="grid grid-cols-2 gap-3 pt-2"><button id="retry-btn" class="py-2.5 px-4 rounded-lg border border-gray-300 dark:border-slate-600 text-gray-600 dark:text-gray-300 font-medium text-sm hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors flex items-center justify-center gap-2"><i data-lucide="refresh-cw" class="w-4 h-4"></i> Ulangi</button> <button id="insert-btn" class="py-2.5 px-4 rounded-lg bg-primary-500 hover:bg-primary-600 text-white font-medium text-sm transition-colors flex items-center justify-center gap-2 shadow-lg shadow-primary-500/20"><i data-lucide="download" class="w-4 h-4"></i> Sisipkan</button></div></section></main><script src="0742b8dbe5d845401c4b.js"></script><script>lucide.createIcons()</script></body></html>
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FrasaTwist — Paraphraser Add-in</title>
+    <meta name="description" content="FrasaTwist: Add-in parafrase cerdas untuk Microsoft Word, mendukung gaya formal dan akademik.">
+    <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: 'var(--p50)', 100: 'var(--p100)', 200: 'var(--p200)',
+                            500: 'var(--p500)', 600: 'var(--p600)', 700: 'var(--p700)',
+                            800: 'var(--p800)', 900: 'var(--p900)',
+                        },
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/diff-match-patch/1.0.5/index.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsdiff/5.1.0/diff.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="7a3b5935166e72ff7288.css">
+    <link rel="stylesheet" href="e532729b7d6483392a37.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+<script defer src="polyfill.js"></script><script defer src="taskpane.js"></script></head>
+
+<body>
+
+    <!-- ── Header ──────────────────────────────────────── -->
+    <header>
+        <div class="header-inner">
+            <div class="header-brand">
+                <img src="assets/logo.png" alt="FrasaTwist Logo" class="brand-logo-img" />
+                <h1 class="brand-name">FrasaTwist</h1>
+            </div>
+            <div class="relative">
+                <div class="header-actions">
+                    <button id="settings-btn" class="settings-btn" aria-label="Buka Pengaturan">
+                        <i data-lucide="settings" class="w-4 h-4"></i>
+                    </button>
+                    <button id="help-btn" class="settings-btn" aria-label="Buka Bantuan">
+                        <i data-lucide="info" class="w-4 h-4"></i>
+                    </button>
+                </div>
+
+                <!-- Settings Dropdown -->
+                <div id="settings-menu" class="settings-dropdown hidden">
+                    <p class="dropdown-title">Pengaturan</p>
+                    <div class="flex items-center justify-between">
+                        <span class="dropdown-item-label">Mode gelap</span>
+                        <button id="dark-mode-toggle" class="toggle-track" aria-label="Aktifkan mode gelap">
+                            <div id="toggle-circle" class="toggle-thumb"></div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Help Dropdown -->
+                <div id="help-menu" class="help-dropdown hidden">
+                    <p class="dropdown-title">Bantuan</p>
+                    <div class="flex flex-col gap-0.5">
+                        <a class="dropdown-item" href="https://forms.gle/NEf3ts4Byxuwc7K89" target="_blank" rel="noopener">
+                            <i data-lucide="message-square" class="w-3.5 h-3.5 flex-shrink-0"></i>
+                            <span>Formulir feedback</span>
+                        </a>
+                        <button class="dropdown-item w-full text-left" id="test-btn">
+                            <i data-lucide="flask-conical" class="w-3.5 h-3.5 flex-shrink-0"></i>
+                            <span>Simulasi hasil gagal</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ── Main ────────────────────────────────────────── -->
+    <main>
+
+        <!-- Maintenance Banner -->
+        <div id="maintanance-box" class="alert-box alert-warning hidden">
+            <i data-lucide="alert-triangle" class="alert-icon w-4 h-4"></i>
+            <div>
+                <p class="alert-title">Sedang maintenance</p>
+                <p class="alert-body">Silahkan coba kembali beberapa hari lagi.</p>
+            </div>
+        </div>
+
+        <!-- ── Input Card ─────────────────────────────────── -->
+        <div class="card animate-fade-in-up" id="input-section">
+
+            <!-- Mode parafrase -->
+            <div class="card-section">
+                <p class="card-label">Mode parafrase</p>
+                <div id="mode-selector" class="mode-selector">
+                    <button type="button" id="mode-formal" data-mode="formal" class="mode-btn mode-btn--active">
+                        <i data-lucide="briefcase" class="w-3.5 h-3.5" style="pointer-events:none"></i>
+                        Formal
+                    </button>
+                    <button type="button" id="mode-academic" data-mode="academic" class="mode-btn">
+                        <i data-lucide="graduation-cap" class="w-3.5 h-3.5" style="pointer-events:none"></i>
+                        Akademik
+                    </button>
+                </div>
+            </div>
+
+            <div class="card-divider"></div>
+
+            <!-- Teks Terseleksi -->
+            <div class="card-section">
+                <div class="card-label-row">
+                    <p class="card-label">Teks terseleksi</p>
+                    <span class="card-label-note">Maks 750 kata</span>
+                </div>
+                <textarea id="source-text" class="source-textarea" readonly
+                    placeholder="Seleksi teks di dokumen Word untuk memulai…"></textarea>
+                <div class="mt-2 flex items-center justify-between gap-2">
+                    <span id="selection-status" class="status-badge">
+                        <i data-lucide="mouse-pointer-2" class="w-3 h-3"></i>
+                        Menunggu seleksi…
+                    </span>
+                </div>
+                <div class="mt-3">
+                    <button id="paraphrase-btn" class="btn-primary" disabled aria-label="Mulai proses parafrase">
+                        <i data-lucide="sparkles" class="w-4 h-4"></i>
+                        Parafrase
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ── Loading State ─────────────────────────────── -->
+        <section id="loading-state" class="hidden">
+            <div class="spinner-wrap animate-fade-in">
+                <div class="spinner">
+                    <div class="spinner-ring"></div>
+                    <div class="spinner-arc"></div>
+                    <div class="spinner-pulse"></div>
+                </div>
+                <p class="spinner-label">Sedang memproses parafrase…</p>
+            </div>
+        </section>
+
+        <!-- ── Error Box ──────────────────────────────────── -->
+        <div id="error-box" class="alert-box alert-danger hidden">
+            <i data-lucide="alert-triangle" class="alert-icon w-4 h-4"></i>
+            <div>
+                <p class="alert-title">Terjadi kesalahan</p>
+                <p id="error-message" class="alert-body"></p>
+            </div>
+        </div>
+
+        <!-- ── Warning Box ────────────────────────────────── -->
+        <div id="warning-box" class="alert-box alert-warning hidden">
+            <i data-lucide="alert-triangle" class="alert-icon w-4 h-4"></i>
+            <div>
+                <p class="alert-title">Peringatan</p>
+                <p class="alert-body">Skor kemiripan makna / keragaman leksikal rendah. Harap periksa kembali hasil parafrase.</p>
+            </div>
+        </div>
+
+        <!-- ── Result Section ─────────────────────────────── -->
+        <section id="result-section" class="hidden animate-slide-up">
+
+            <!-- Result Card -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-heading">Hasil parafrase</span>
+                    <div class="flex items-center gap-2">
+                        <span class="card-heading-meta">Teks dibuang</span>
+                        <button id="diff-toggle" class="diff-toggle-btn" aria-label="Tampilkan atau sembunyikan teks yang dihapus">
+                            <div id="toggle-circle-2" class="diff-toggle-thumb"></div>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div id="result-content"></div>
+                </div>
+
+                <div id="sentence-tracker" class="sentence-tracker-bar">
+                    <button id="sentence-prev" class="btn-icon" style="width:24px;height:24px"
+                        aria-label="Navigasi ke kalimat sebelumnya" disabled>
+                        <i data-lucide="chevron-left" class="w-3.5 h-3.5"></i>
+                    </button>
+                    <span id="sentence-position" class="sentence-position-label">Semua kalimat</span>
+                    <button id="sentence-next" class="btn-icon" style="width:24px;height:24px"
+                        aria-label="Navigasi ke kalimat berikutnya" disabled>
+                        <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                    </button>
+                </div>
+
+                <div class="card-footer">
+                    <span class="card-footer-meta">Jumlah kata: <strong id="addition-count"></strong></span>
+                    <div class="flex gap-2">
+                        <button id="copy-btn" class="btn-icon" aria-label="Salin teks hasil parafrase">
+                            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                        </button>
+                        <button id="insert-btn" class="btn-icon filled" aria-label="Sisipkan teks ke dokumen Word">
+                            <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feedback Card -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-heading">Penilaian</span>
+                    <i data-lucide="star" class="w-4 h-4 feedback-star-icon"></i>
+                </div>
+
+                <div class="card-section-plain">
+
+                    <div class="rating-row">
+                        <span class="rating-label">Makna sesuai teks asli</span>
+                        <div id="star-rating-semantic" class="star-group">
+                            <button type="button" class="star-btn" data-value="1" aria-label="Nilai 1 bintang"><i data-lucide="star" class="w-4 h-4 star-icon pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="2" aria-label="Nilai 2 bintang"><i data-lucide="star" class="w-4 h-4 star-icon pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="3" aria-label="Nilai 3 bintang"><i data-lucide="star" class="w-4 h-4 star-icon pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="4" aria-label="Nilai 4 bintang"><i data-lucide="star" class="w-4 h-4 star-icon pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="5" aria-label="Nilai 5 bintang"><i data-lucide="star" class="w-4 h-4 star-icon pointer-events-none"></i></button>
+                        </div>
+                    </div>
+                    <div class="rating-divider"></div>
+                    <div class="rating-row">
+                        <span class="rating-label">Kosakata beragam</span>
+                        <div id="star-rating-lexical" class="star-group">
+                            <button type="button" class="star-btn" data-value="1" aria-label="Nilai 1 bintang"><i data-lucide="star" class="w-4 h-4 star-icon pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="2" aria-label="Nilai 2 bintang"><i data-lucide="star" class="w-4 h-4 star-icon pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="3" aria-label="Nilai 3 bintang"><i data-lucide="star" class="w-4 h-4 star-icon pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="4" aria-label="Nilai 4 bintang"><i data-lucide="star" class="w-4 h-4 star-icon pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="5" aria-label="Nilai 5 bintang"><i data-lucide="star" class="w-4 h-4 star-icon pointer-events-none"></i></button>
+                        </div>
+                    </div>
+                    <div class="rating-divider"></div>
+                    <div class="rating-row">
+                        <span class="rating-label">Tata bahasa akurat</span>
+                        <div id="star-rating-gramatical" class="star-group">
+                            <button type="button" class="star-btn" data-value="1" aria-label="Nilai 1 bintang"><i data-lucide="star" class="w-4 h-4 star-icon pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="2" aria-label="Nilai 2 bintang"><i data-lucide="star" class="w-4 h-4 star-icon pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="3" aria-label="Nilai 3 bintang"><i data-lucide="star" class="w-4 h-4 star-icon pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="4" aria-label="Nilai 4 bintang"><i data-lucide="star" class="w-4 h-4 star-icon pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="5" aria-label="Nilai 5 bintang"><i data-lucide="star" class="w-4 h-4 star-icon pointer-events-none"></i></button>
+                        </div>
+                    </div>
+                    <div class="rating-divider"></div>
+                    <div class="rating-row">
+                        <span class="rating-label">Struktur kalimat variatif</span>
+                        <div id="star-rating-syntactic" class="star-group">
+                            <button type="button" class="star-btn" data-value="1" aria-label="Nilai 1 bintang"><i data-lucide="star" class="w-4 h-4 star-icon pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="2" aria-label="Nilai 2 bintang"><i data-lucide="star" class="w-4 h-4 star-icon pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="3" aria-label="Nilai 3 bintang"><i data-lucide="star" class="w-4 h-4 star-icon pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="4" aria-label="Nilai 4 bintang"><i data-lucide="star" class="w-4 h-4 star-icon pointer-events-none"></i></button>
+                            <button type="button" class="star-btn" data-value="5" aria-label="Nilai 5 bintang"><i data-lucide="star" class="w-4 h-4 star-icon pointer-events-none"></i></button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="feedback-footer">
+                    <textarea id="feedback-comment" rows="2" class="feedback-textarea"
+                        placeholder="Saran atau catatan? (opsional)"
+                        aria-label="Komentar feedback opsional"></textarea>
+                    <button id="submit-feedback-btn" class="btn-submit-feedback">
+                        Kirim penilaian
+                    </button>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Failed Results Container -->
+        <div class="hidden" id="failed-results-container"></div>
+
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" role="status" aria-live="polite"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        });
+    </script>
+</body>
+
+</html>

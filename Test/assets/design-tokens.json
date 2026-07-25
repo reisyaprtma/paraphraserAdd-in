@@ -1,0 +1,241 @@
+{
+  "meta": {
+    "name": "Office Add-in Redesign — Deep Blue System",
+    "basedOn": "Mobile fitness-app reference (rounded cards, soft color blocks, bold headings, pill badges)",
+    "primarySeed": "#07468B",
+    "version": "1.0.0",
+    "notes": "Skala warna diturunkan dari primary seed #07468B. Warna semantik (success/warning/danger) sengaja sedikit didinginkan/didesaturasi agar tetap 'senada' (harmonis) dengan primary biru tua, bukan warna generik Bootstrap."
+  },
+
+  "color": {
+    "primary": {
+      "50":  "#EAF1F8",
+      "100": "#CBE0EF",
+      "200": "#9CC1DF",
+      "300": "#6CA1D0",
+      "400": "#3D82C0",
+      "500": "#1E68A8",
+      "600": "#0F5495",
+      "700": "#07468B",
+      "800": "#063972",
+      "900": "#052C59",
+      "base": "#07468B",
+      "onPrimary": "#FFFFFF",
+      "usage": "700 = brand utama (header, tombol primary, ikon aktif). 50-100 = background lembut untuk card/badge kategori. 800-900 = teks di atas background terang / hover state gelap."
+    },
+
+    "semantic": {
+      "success": {
+        "50": "#E9F7F1",
+        "100": "#C9EEE0",
+        "500": "#1E9D74",
+        "700": "#15754F",
+        "onColor": "#FFFFFF",
+        "rationale": "Hijau digeser sedikit ke arah teal (bukan hijau murni) supaya hue-nya lebih dekat dengan biru dingin primary, senada dipakai berdampingan."
+      },
+      "warning": {
+        "50": "#FDF3E3",
+        "100": "#FBE4BE",
+        "500": "#E0A736",
+        "700": "#B37F22",
+        "onColor": "#3A2A00",
+        "rationale": "Amber dibuat sedikit lebih keemasan/muted (bukan oranye terang) supaya kontras dengan biru tua terasa elegan, bukan norak."
+      },
+      "danger": {
+        "50": "#FBEAEA",
+        "100": "#F4CBCB",
+        "500": "#D8434F",
+        "700": "#A82F3A",
+        "onColor": "#FFFFFF",
+        "rationale": "Merah didinginkan (sedikit ke arah magenta-merah) alih-alih merah-oranye, agar tidak bentrok dengan hue biru primary."
+      },
+      "info": {
+        "50": "#EAF1F8",
+        "500": "#3D82C0",
+        "700": "#0F5495",
+        "onColor": "#FFFFFF",
+        "rationale": "Memakai primary scale langsung — info dan primary satu keluarga warna."
+      }
+    },
+
+    "accentSoft": {
+      "description": "Set warna 'kartu kategori' pastel seperti pada referensi (ungu, biru muda, oranye, pink). Dipakai untuk background badge/tag/kartu ringan, bukan untuk teks/tombol besar.",
+      "lavender": "#E4E1FA",
+      "skyBlue":  "#DCEBFB",
+      "peach":    "#FCE8D6",
+      "blush":    "#FBE1EC",
+      "mint":     "#DFF3EA"
+    },
+
+    "neutral": {
+      "0":   "#FFFFFF",
+      "50":  "#F6F8FA",
+      "100": "#EEF1F5",
+      "200": "#E1E6EC",
+      "300": "#C9D1DA",
+      "400": "#9AA6B2",
+      "500": "#6B7684",
+      "600": "#4C5560",
+      "700": "#333B45",
+      "800": "#1F252C",
+      "900": "#12161B",
+      "note": "Neutral diberi sedikit tint kebiruan (cool gray), bukan abu netral, agar konsisten dengan hue primary."
+    },
+
+    "surface": {
+      "canvas": "#F6F8FA",
+      "card": "#FFFFFF",
+      "cardElevated": "#FFFFFF",
+      "overlay": "rgba(7, 70, 139, 0.45)",
+      "divider": "#E1E6EC"
+    },
+
+    "text": {
+      "primary": "#12161B",
+      "secondary": "#4C5560",
+      "muted": "#6B7684",
+      "onPrimaryFill": "#FFFFFF",
+      "link": "#07468B"
+    }
+  },
+
+  "typography": {
+    "fontFamily": {
+      "display": "'Segoe UI Semibold', 'Segoe UI', system-ui, sans-serif",
+      "body": "'Segoe UI', system-ui, sans-serif",
+      "note": "Segoe UI dipertahankan agar konsisten dengan Office (Fluent), tapi weight dibuat lebih berani di heading untuk meniru kesan 'bold heading' pada referensi mobile."
+    },
+    "scale": {
+      "display":  { "size": "22px", "weight": 700, "lineHeight": "28px" },
+      "h1":       { "size": "18px", "weight": 700, "lineHeight": "24px" },
+      "h2":       { "size": "16px", "weight": 600, "lineHeight": "22px" },
+      "body":     { "size": "13px", "weight": 400, "lineHeight": "18px" },
+      "bodyStrong": { "size": "13px", "weight": 600, "lineHeight": "18px" },
+      "caption":  { "size": "11px", "weight": 500, "lineHeight": "14px" },
+      "badgeText":{ "size": "10px", "weight": 600, "lineHeight": "12px" }
+    }
+  },
+
+  "radius": {
+    "sm": "8px",
+    "md": "12px",
+    "lg": "18px",
+    "xl": "24px",
+    "pill": "999px",
+    "note": "Referensi mobile pakai radius besar (card ~20-24px, badge/pill penuh). Untuk taskpane office yang sempit, gunakan lg (18px) untuk card utama, pill untuk badge/tag/tombol kecil."
+  },
+
+  "spacing": {
+    "xs": "4px",
+    "sm": "8px",
+    "md": "12px",
+    "lg": "16px",
+    "xl": "24px",
+    "2xl": "32px"
+  },
+
+  "elevation": {
+    "flat": "none",
+    "card": "0px 2px 8px rgba(7, 70, 139, 0.08)",
+    "cardHover": "0px 4px 14px rgba(7, 70, 139, 0.14)",
+    "floating": "0px 8px 20px rgba(7, 70, 139, 0.18)"
+  },
+
+  "components": {
+    "button": {
+      "primary": {
+        "background": "{color.primary.700}",
+        "text": "{color.primary.onPrimary}",
+        "radius": "{radius.pill}",
+        "hoverBackground": "{color.primary.800}",
+        "pressedBackground": "{color.primary.900}",
+        "disabledBackground": "{color.primary.200}"
+      },
+      "secondary": {
+        "background": "{color.primary.50}",
+        "text": "{color.primary.700}",
+        "radius": "{radius.pill}",
+        "hoverBackground": "{color.primary.100}"
+      },
+      "danger": {
+        "background": "{color.semantic.danger.500}",
+        "text": "{color.semantic.danger.onColor}",
+        "radius": "{radius.pill}"
+      }
+    },
+    "card": {
+      "background": "{color.surface.card}",
+      "radius": "{radius.lg}",
+      "padding": "{spacing.lg}",
+      "shadow": "{elevation.card}"
+    },
+    "cardAccent": {
+      "description": "Kartu highlight seperti 'Daily challenge' pada referensi — background solid dari primary atau accentSoft, teks kontras.",
+      "variants": {
+        "primaryFilled": { "background": "{color.primary.700}", "text": "#FFFFFF" },
+        "softLavender": { "background": "{color.accentSoft.lavender}", "text": "{color.text.primary}" },
+        "softSky": { "background": "{color.accentSoft.skyBlue}", "text": "{color.text.primary}" }
+      }
+    },
+    "badge": {
+      "radius": "{radius.pill}",
+      "paddingX": "{spacing.sm}",
+      "paddingY": "4px",
+      "variants": {
+        "info": { "background": "{color.primary.50}", "text": "{color.primary.700}" },
+        "success": { "background": "{color.semantic.success.50}", "text": "{color.semantic.success.700}" },
+        "warning": { "background": "{color.semantic.warning.50}", "text": "{color.semantic.warning.700}" },
+        "danger": { "background": "{color.semantic.danger.50}", "text": "{color.semantic.danger.700}" }
+      }
+    },
+    "navBar": {
+      "description": "Bottom/side action bar bergaya pill mengikuti referensi mobile, diadaptasi jadi header/footer command bar di taskpane.",
+      "background": "{color.surface.card}",
+      "activeIndicator": "{color.primary.700}",
+      "iconInactive": "{color.neutral.400}",
+      "iconActive": "{color.primary.700}",
+      "radius": "{radius.pill}"
+    },
+    "input": {
+      "background": "{color.neutral.50}",
+      "border": "{color.neutral.200}",
+      "borderFocus": "{color.primary.500}",
+      "radius": "{radius.md}",
+      "text": "{color.text.primary}",
+      "placeholder": "{color.text.muted}"
+    },
+    "avatar": {
+      "radius": "{radius.pill}",
+      "ringColor": "{color.primary.100}"
+    },
+    "tag": {
+      "description": "Untuk label tingkat/kategori seperti 'Medium' / 'Light' pada referensi.",
+      "radius": "{radius.pill}",
+      "sizes": ["sm", "md"]
+    }
+  },
+
+  "iconography": {
+    "style": "outline, rounded stroke-ends, 1.5-2px stroke weight",
+    "activeColor": "{color.primary.700}",
+    "inactiveColor": "{color.neutral.400}"
+  },
+
+  "motion": {
+    "durationFast": "120ms",
+    "durationBase": "200ms",
+    "easing": "cubic-bezier(0.2, 0, 0, 1)"
+  },
+
+  "officeAddinAdaptation": {
+    "taskpaneWidth": "320px–450px (ikuti guideline Office Add-in, minimum 320px)",
+    "layoutNotes": [
+      "Ganti bottom-tab-bar mobile menjadi command bar tipis di atas atau bawah taskpane, tetap pakai bentuk pill + indikator aktif berwarna primary.",
+      "Card besar full-bleed pada mobile dipersempit paddingnya (gunakan spacing.md-lg) agar tidak terlalu lebar untuk taskpane sempit.",
+      "Header 'Hello, Sandra' pada referensi diadaptasi jadi header ringkas: judul add-in + ikon aksi (search/help) di kanan.",
+      "Kombinasi 2 kartu sejajar (Yoga/Balance) diadaptasi jadi grid 2 kolom untuk shortcut/menu fitur di taskpane.",
+      "Tetap pertahankan komponen Fluent UI (Office Fabric) sebagai basis komponen, tapi override token warna/radius/shadow sesuai file ini agar tidak terlihat 'Fluent default'."
+    ],
+    "themeIntegration": "Map token ini ke Fluent UI theme object (createTheme / partialTheme) — primary.700 sebagai themePrimary, neutral scale sebagai neutralPrimary/neutralLighter/dst, radius.md sebagai default effects.roundedCorner2/4."
+  }
+}

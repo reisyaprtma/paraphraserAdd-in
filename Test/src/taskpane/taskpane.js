@@ -97,19 +97,17 @@ async function updateSelectionInBox() {
             box.value = text;
             if (statusEl) {
                 if (count > 750) {
-                    statusEl.innerHTML = `<i data-lucide="alert-triangle" class="text-red-500 w-3 h-3"></i> Jumlah kata melebihi batas maksimal! (Terseleksi ${count} kata)`;
-                    // statusEl.classList.add('active');
+                    statusEl.innerHTML = `<i data-lucide="alert-triangle" class="w-3 h-3"></i> Jumlah kata melebihi batas maksimal! (Terseleksi ${count} kata)`;
                     statusEl.classList.remove('active');
-                    statusEl.classList.add('bg-red-100');
-                    statusEl.classList.add('text-red-500');
+                    statusEl.classList.add('status-badge--error');
                 } else if (count > 0) {
                     statusEl.innerHTML = `<i data-lucide="check" class="w-3 h-3"></i> ${count} kata terseleksi`;
                     statusEl.classList.add('active');
+                    statusEl.classList.remove('status-badge--error');
                 } else {
                     statusEl.innerHTML = `<i data-lucide="mouse-pointer-2" class="w-3 h-3"></i> Tidak ada seleksi`;
                     statusEl.classList.remove('active');
-                    statusEl.classList.remove('bg-red-100');
-                    statusEl.classList.remove('text-red-500');
+                    statusEl.classList.remove('status-badge--error');
                 }
                 if (typeof lucide !== 'undefined') lucide.createIcons();
             }
@@ -138,8 +136,10 @@ Office.onReady((info) => {
         Office.context.document.addHandlerAsync(
             Office.EventType.DocumentSelectionChanged,
             () => updateSelectionInBox(),
-            (err) => {
-                if (err) console.warn('DocumentSelectionChanged handler gagal:', err);
+            (asyncResult) => {
+                if (asyncResult && asyncResult.status === Office.AsyncResultStatus.Failed) {
+                    console.warn('DocumentSelectionChanged handler gagal:', asyncResult.error);
+                }
             }
         );
     }
@@ -1108,7 +1108,7 @@ function failedRenderStackedDiff(original, paraphrasedArray, pScores, bScores, o
 
         // bScore: bar visualization
         const bBarPercent = bVal !== null ? Math.min(Math.round(bVal * 100), 100) : 0;
-        const bBarColor = bIsGood ? '#16a34a' : '#d97706';
+        const bBarColor = bIsGood ? 'var(--color-success-500)' : 'var(--color-warning-500)';
         const bLabel = bIsGood ? 'Tingkat similarity rendah' : 'Similarity tinggi';
         const bClass = bIsGood ? 'metric-success' : 'metric-warning';
         const bIcon = bIsGood ? 'check-circle' : 'alert-triangle';
@@ -1423,14 +1423,10 @@ function setupEventListeners() {
         btn.addEventListener('click', () => {
             modeBtns.forEach(b => {
                 b.removeAttribute('data-active');
-                b.style.background = 'transparent';
-                b.style.color = 'var(--clr-text, #555)';
-                b.style.boxShadow = 'none';
+                b.classList.remove('mode-btn--active');
             });
             btn.setAttribute('data-active', 'true');
-            btn.style.background = 'var(--clr-brand, #B6FF8F)';
-            btn.style.color = '#1a1a1a';
-            btn.style.boxShadow = '0 2px 8px rgba(0,0,0,0.12)';
+            btn.classList.add('mode-btn--active');
         });
     });
 
@@ -1477,18 +1473,18 @@ function updateHealthCheckUI(parapluie, bleu) {
     const pText = document.getElementById('score-makna-text');
     pBar.style.width = `${pScore}%`;
 
-    // Logika Warna Akurasi Makna (ParaPLUIE)
+    // Logika Warna Akurasi Makna (ParaPLUIE) — pakai token CSS
     if (pScore >= 80) {
-        pBar.className = "bg-green-500 h-2 rounded-full transition-all duration-500";
-        pText.className = "font-bold text-green-600 dark:text-green-400";
+        pBar.className = "score-bar-fill score-bar--good";
+        pText.className = "score-text--good";
         pText.innerText = `${pScore}% (Aman)`;
     } else if (pScore >= 60) {
-        pBar.className = "bg-orange-500 h-2 rounded-full transition-all duration-500";
-        pText.className = "font-bold text-orange-600 dark:text-orange-400";
+        pBar.className = "score-bar-fill score-bar--warn";
+        pText.className = "score-text--warn";
         pText.innerText = `${pScore}% (Cek Ulang)`;
     } else {
-        pBar.className = "bg-red-500 h-2 rounded-full transition-all duration-500";
-        pText.className = "font-bold text-red-600 dark:text-red-400";
+        pBar.className = "score-bar-fill score-bar--danger";
+        pText.className = "score-text--danger";
         pText.innerText = `${pScore}% (Berisiko)`;
     }
 
@@ -1496,14 +1492,14 @@ function updateHealthCheckUI(parapluie, bleu) {
     const bText = document.getElementById('score-variasi-text');
     bBar.style.width = `${bScore}%`;
 
-    // Logika Warna Variasi Kata (BLEU) -> Asumsi semakin rendah metrik BLEU (sedikit plagiat), variasi semakin tinggi/bagus
+    // Logika Warna Variasi Kata (BLEU) — pakai token CSS
     if (bScore <= 40) {
-        bBar.className = "bg-green-500 h-2 rounded-full transition-all duration-500";
-        bText.className = "font-bold text-green-600 dark:text-green-400";
+        bBar.className = "score-bar-fill score-bar--good";
+        bText.className = "score-text--good";
         bText.innerText = `${100 - bScore}% (Bervariasi)`;
     } else {
-        bBar.className = "bg-orange-500 h-2 rounded-full transition-all duration-500";
-        bText.className = "font-bold text-orange-600 dark:text-orange-400";
+        bBar.className = "score-bar-fill score-bar--warn";
+        bText.className = "score-text--warn";
         bText.innerText = `${100 - bScore}% (Mirip Asli)`;
     }
 }
@@ -1544,11 +1540,9 @@ function setupFeedbackInteraction() {
                     const icon = b.querySelector('svg');
                     if (icon) {
                         if (val <= selected) {
-                            icon.classList.remove('text-gray-300');
-                            icon.classList.add('text-yellow-400', 'fill-yellow-400');
+                            icon.classList.add('star-icon--active');
                         } else {
-                            icon.classList.add('text-gray-300');
-                            icon.classList.remove('text-yellow-400', 'fill-yellow-400');
+                            icon.classList.remove('star-icon--active');
                         }
                     }
                 });
@@ -1603,7 +1597,7 @@ function setupFeedbackInteraction() {
 
                 // Ubah UI tombol setelah terkirim
                 submitBtn.innerText = "\u2713 Penilaian Terkirim";
-                submitBtn.classList.add('bg-green-100', 'text-green-700', 'dark:bg-green-900', 'dark:text-green-300');
+                submitBtn.classList.add('btn-feedback--sent');
                 submitBtn.disabled = true;
 
                 // Disable semua bintang di semua grup

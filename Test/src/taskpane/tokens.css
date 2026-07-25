@@ -1,0 +1,183 @@
+/* ============================================================
+   FrasaTwist — Design Tokens v2.0
+   Direction: Clean · Borderless · Pastel · Bold headings
+   Primary seed: #07468B — dipakai sparingly sebagai aksen
+   ============================================================ */
+
+:root {
+    /* ── Primary palette ────────────────────────────────── */
+    --p50:  #EEF4FB;
+    --p100: #D5E6F5;
+    --p200: #A8CBE9;
+    --p300: #6AABDA;
+    --p400: #3A8FCC;
+    --p500: #1A71BB;
+    --p600: #0F5495;
+    --p700: #07468B;   /* brand seed */
+    --p800: #063A74;
+    --p900: #042A55;
+
+    /* ── Pastel accent palette ──────────────────────────── */
+    /* Lavender — untuk highlight state / accent card */
+    --accent-lavender-bg:   #ECEAFD;
+    --accent-lavender-text: #4438CA;
+
+    /* Sky — untuk info ringan */
+    --accent-sky-bg:   #DFF0FD;
+    --accent-sky-text: #0369A1;
+
+    /* Sage / Mint — untuk success */
+    --accent-sage-bg:   #DCFCE7;
+    --accent-sage-text: #166534;
+
+    /* Peach — untuk warning */
+    --accent-peach-bg:   #FEF3C7;
+    --accent-peach-text: #92400E;
+
+    /* Rose — untuk danger */
+    --accent-rose-bg:   #FFE4E6;
+    --accent-rose-text: #9F1239;
+
+    /* ── Neutral surface ────────────────────────────────── */
+    --bg-base:    #F2F4F7;   /* halaman utama */
+    --bg-card:    #FFFFFF;   /* card / panel */
+    --bg-subtle:  #F7F8FA;   /* area subtle di dalam card */
+    --bg-input:   #EFF1F5;   /* input field */
+
+    /* ── Text ───────────────────────────────────────────── */
+    --text-primary:   #181C25;
+    --text-secondary: #4A5568;
+    --text-muted:     #8896A5;
+    --text-on-accent: #FFFFFF;
+    --text-link:      #07468B;
+
+    /* ── Divider / subtle line ──────────────────────────── */
+    --divider: rgba(0, 0, 0, 0.06);
+
+    /* ── Shadow (no color tint — pure soft black) ───────── */
+    --shadow-xs:  0 1px 3px rgba(0,0,0,0.06);
+    --shadow-sm:  0 2px 8px rgba(0,0,0,0.07);
+    --shadow-md:  0 4px 16px rgba(0,0,0,0.09);
+    --shadow-lg:  0 8px 28px rgba(0,0,0,0.12);
+
+    /* ── Radius ─────────────────────────────────────────── */
+    --r-xs:   6px;
+    --r-sm:   10px;
+    --r-md:   14px;
+    --r-lg:   20px;
+    --r-xl:   28px;
+    --r-pill: 999px;
+
+    /* ── Spacing ────────────────────────────────────────── */
+    --sp-1:  4px;
+    --sp-2:  8px;
+    --sp-3:  12px;
+    --sp-4:  16px;
+    --sp-5:  20px;
+    --sp-6:  24px;
+    --sp-8:  32px;
+
+    /* ── Typography ─────────────────────────────────────── */
+    --font: 'Poppins', -apple-system, system-ui, sans-serif;
+    --font-size-xs:  10px;
+    --font-size-sm:  12px;
+    --font-size-md:  13px;
+    --font-size-lg:  15px;
+    --font-size-xl:  18px;
+    --font-size-2xl: 22px;
+
+    /* ── Motion ─────────────────────────────────────────── */
+    --ease:    cubic-bezier(0.2, 0, 0.2, 1);
+    --dur-fast: 120ms;
+    --dur-base: 200ms;
+
+    /* ── Backward compat aliases ─────────────────────────── */
+    --color-primary-50:  var(--p50);
+    --color-primary-100: var(--p100);
+    --color-primary-200: var(--p200);
+    --color-primary-500: var(--p500);
+    --color-primary-600: var(--p600);
+    --color-primary-700: var(--p700);
+    --color-primary-800: var(--p800);
+    --color-primary-900: var(--p900);
+    --color-primary-on:  #FFFFFF;
+
+    --color-success-50:  var(--accent-sage-bg);
+    --color-success-500: #22C55E;
+    --color-success-700: var(--accent-sage-text);
+    --color-warning-50:  var(--accent-peach-bg);
+    --color-warning-500: #F59E0B;
+    --color-warning-700: var(--accent-peach-text);
+    --color-danger-50:   var(--accent-rose-bg);
+    --color-danger-500:  #F43F5E;
+    --color-danger-700:  var(--accent-rose-text);
+    --color-info-50:     var(--accent-sky-bg);
+    --color-info-500:    var(--p500);
+    --color-info-700:    var(--p700);
+    --color-accent-lavender: var(--accent-lavender-bg);
+    --color-surface-canvas:  var(--bg-base);
+    --color-surface-card:    var(--bg-card);
+    --color-surface-divider: var(--divider);
+    --color-text-primary:   var(--text-primary);
+    --color-text-secondary: var(--text-secondary);
+    --color-text-muted:     var(--text-muted);
+    --color-text-on-primary: var(--text-on-accent);
+    --color-neutral-200: #E4E7ED;
+    --color-neutral-300: #C8CDD8;
+    --color-neutral-400: var(--text-muted);
+    --color-neutral-50:  var(--bg-subtle);
+
+    --clr-bg:      var(--bg-base);
+    --clr-surface: var(--bg-card);
+    --clr-border:  var(--divider);
+    --clr-text:    var(--text-primary);
+    --clr-muted:   var(--text-muted);
+    --clr-heavy:   var(--p700);
+    --clr-brand:   var(--p700);
+    --clr-danger:  #F43F5E;
+    --clr-warning: #F59E0B;
+    --clr-success: #22C55E;
+    --clr-lavender: var(--accent-lavender-bg);
+    --shadow-card:       var(--shadow-sm);
+    --shadow-card-hover: var(--shadow-md);
+    --shadow-float:      var(--shadow-lg);
+    --radius-card:  var(--r-lg);
+    --radius-pill:  999px;
+    --transition:   var(--dur-base) var(--ease);
+}
+
+/* ── Dark Mode ───────────────────────────────────────────── */
+.dark {
+    --bg-base:   #121212;   /* Gelap keabuan murni (charcoal dark) */
+    --bg-card:   #1E1E1E;   /* Card gelap keabuan */
+    --bg-subtle: #262626;   /* Panel subtle */
+    --bg-input:  #2C2C2C;   /* Input field */
+    --divider:   rgba(255, 255, 255, 0.08);
+
+    --text-primary:   #FFFFFF;
+    --text-secondary: #E0E0E0;
+    --text-muted:     #A0A0A0;
+
+    --accent-lavender-bg:   rgba(100, 88, 255, 0.22);
+    --accent-lavender-text: #B8B0FF;
+    --accent-sage-bg:       rgba(34, 197, 94, 0.2);
+    --accent-sage-text:     #6EE7B7;
+    --accent-peach-bg:      rgba(245, 158, 11, 0.2);
+    --accent-peach-text:    #FDE047;
+    --accent-rose-bg:       rgba(244, 63, 94, 0.2);
+    --accent-rose-text:     #FFA6B6;
+    --accent-sky-bg:        rgba(14, 165, 233, 0.2);
+    --accent-sky-text:      #7DD3FC;
+
+    --shadow-xs: 0 1px 3px rgba(0,0,0,0.4);
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.5);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.6);
+    --shadow-lg: 0 8px 28px rgba(0,0,0,0.7);
+
+    --clr-bg:      var(--bg-base);
+    --clr-surface: var(--bg-card);
+    --clr-border:  var(--divider);
+    --clr-text:    var(--text-primary);
+    --clr-muted:   var(--text-muted);
+    --clr-lavender: var(--accent-lavender-bg);
+}

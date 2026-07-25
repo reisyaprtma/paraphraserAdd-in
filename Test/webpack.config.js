@@ -63,6 +63,11 @@ module.exports = async (env, options) => {
             to: "assets/[name][ext][query]",
           },
           {
+            // Copy design token CSS so taskpane.html can reference it as tokens.css
+            from: "src/taskpane/tokens.css",
+            to: "tokens.css",
+          },
+          {
             from: "manifest*.xml",
             to: "[name]" + "[ext]",
             transform(content) {
